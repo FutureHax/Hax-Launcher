@@ -99,7 +99,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.DropTarget.DragObject;
 
 /**
@@ -118,7 +117,8 @@ public final class Launcher extends Activity
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
     private static final int MENU_MANAGE_APPS = MENU_WALLPAPER_SETTINGS + 1;
     private static final int MENU_SYSTEM_SETTINGS = MENU_MANAGE_APPS + 1;
-    private static final int MENU_HELP = MENU_SYSTEM_SETTINGS + 1;
+    private static final int MENU_PREFERENCES = MENU_SYSTEM_SETTINGS + 1;
+    private static final int MENU_HELP = MENU_PREFERENCES + 1;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -1347,6 +1347,9 @@ public final class Launcher extends Activity
         Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
         settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        Intent preferences = new Intent().setClass(this, com.t3hh4xx0r.haxlauncher.preferences.Preferences.class);
+        preferences.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         String helpUrl = getString(R.string.help_url);
         Intent help = new Intent(Intent.ACTION_VIEW, Uri.parse(helpUrl));
         help.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -1363,6 +1366,10 @@ public final class Launcher extends Activity
             .setIcon(android.R.drawable.ic_menu_preferences)
             .setIntent(settings)
             .setAlphabeticShortcut('P');
+        menu.add(0, MENU_PREFERENCES, 0, R.string.menu_preferences)
+            .setIcon(android.R.drawable.ic_menu_preferences)
+            .setIntent(preferences)
+            .setAlphabeticShortcut('O');
         if (!helpUrl.isEmpty()) {
             menu.add(0, MENU_HELP, 0, R.string.menu_help)
                 .setIcon(android.R.drawable.ic_menu_help)
