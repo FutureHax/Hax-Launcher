@@ -39,6 +39,7 @@ import android.content.ClipDescription;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -70,6 +71,11 @@ import android.widget.Toast;
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.FolderIcon.FolderRingAnimator;
 import com.t3hh4xx0r.haxlauncher.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
+import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -107,6 +113,8 @@ public class Workspace extends SmoothPagedView
     private float mBackgroundAlpha = 0;
     private float mOverScrollMaxBackgroundAlpha = 0.0f;
     private int mOverScrollPageIndex = -1;
+    private AnimatorSet mDividerAnimator;
+
 
     private float mWallpaperScrollRatio = 1.0f;
 
@@ -175,7 +183,6 @@ public class Workspace extends SmoothPagedView
     private final Rect mTempRect = new Rect();
     private final int[] mTempXY = new int[2];
     private int mDragViewMultiplyColor;
-    private float mOverscrollFade = 0;
 
     // Paint used to draw external drop outline
     private final Paint mExternalDragOutlinePaint = new Paint();
@@ -235,6 +242,9 @@ public class Workspace extends SmoothPagedView
     private float[] mNewAlphas;
     private float[] mNewRotationYs;
     private float mTransitionProgress;
+
+    // Preferences
+    private boolean mShowSearchBar;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -308,6 +318,9 @@ public class Workspace extends SmoothPagedView
 
         LauncherModel.updateWorkspaceLayoutCells(cellCountX, cellCountY);
         setHapticFeedbackEnabled(false);
+
+        // Preferences
+        mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(context);
 
         mLauncher = (Launcher) context;
         initWorkspace();
@@ -388,11 +401,20 @@ public class Workspace extends SmoothPagedView
         setWillNotDraw(false);
         setChildrenDrawnWithCacheEnabled(true);
 
+        final Resources res = getResources();
+
         try {
-            final Resources res = getResources();
             mBackground = res.getDrawable(R.drawable.apps_customize_bg);
         } catch (Resources.NotFoundException e) {
             // In this case, we will skip drawing background protection
+        }
+
+        if (!mShowSearchBar) {
+            int paddingTop = 0;
+            if (mLauncher.getCurrentOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+                paddingTop = (int)res.getDimension(R.dimen.qsb_bar_hidden_inset);
+            }
+            setPadding(0, paddingTop, getPaddingRight(), getPaddingBottom());
         }
 
         mChangeStateAnimationListener = new AnimatorListenerAdapter() {
@@ -1224,11 +1246,7 @@ public class Workspace extends SmoothPagedView
             cl.setPivotY(cl.getMeasuredHeight() * 0.5f);
             cl.setRotationY(rotation);
             cl.setOverscrollTransformsDirty(true);
-            setFadeForOverScroll(Math.abs(scrollProgress));
         } else {
-            if (mOverscrollFade != 0) {
-                setFadeForOverScroll(0);
-            }
             // We don't want to mess with the translations during transitions
             if (!isSwitchingState()) {
                 ((CellLayout) getChildAt(0)).resetOverscrollTransforms();
@@ -3567,21 +3585,81 @@ public class Workspace extends SmoothPagedView
         mLauncher.getDragLayer().getLocationInDragLayer(this, loc);
     }
 
-    void setFadeForOverScroll(float fade) {
-        if (!isScrollingIndicatorEnabled()) return;
-
-        mOverscrollFade = fade;
-        float reducedFade = 0.5f + 0.5f * (1 - fade);
+    void showDockDivider(boolean immediately) {
         final ViewGroup parent = (ViewGroup) getParent();
-        final ImageView qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
-        final ImageView dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
-        final ImageView scrollIndicator = getScrollingIndicator();
-
-        cancelScrollingIndicatorAnimations();
-        if (qsbDivider != null) qsbDivider.setAlpha(reducedFade);
-        if (dockDivider != null) dockDivider.setAlpha(reducedFade);
-        scrollIndicator.setAlpha(1 - fade);
+        final View qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
+        final View dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
+        if (qsbDivider != null && dockDivider != null) {
+            if (mShowSearchBar) {
+                qsbDivider.setVisibility(View.VISIBLE);
+            }
+            dockDivider.setVisibility(View.VISIBLE);
+            if (mDividerAnimator != null) {
+                mDividerAnimator.cancel();
+                mDividerAnimator = null;
+            }
+            if (immediately) {
+                if (mShowSearchBar) {
+                    qsbDivider.setAlpha(1f);
+                }
+                dockDivider.setAlpha(1f);
+            } else {
+                mDividerAnimator = new AnimatorSet();
+                if (mShowSearchBar) {
+                    mDividerAnimator.playTogether(ObjectAnimator.ofFloat(qsbDivider, "alpha", 1f),
+                            ObjectAnimator.ofFloat(dockDivider, "alpha", 1f));
+                } else {
+                    mDividerAnimator.play(ObjectAnimator.ofFloat(dockDivider, "alpha", 1f));
+                }
+                mDividerAnimator.setDuration(sScrollIndicatorFadeInDuration);
+                mDividerAnimator.start();
+            }
+        }
     }
 
-
+    void hideDockDivider(boolean immediately) {
+        final ViewGroup parent = (ViewGroup) getParent();
+        final View qsbDivider = (ImageView) (parent.findViewById(R.id.qsb_divider));
+        final View dockDivider = (ImageView) (parent.findViewById(R.id.dock_divider));
+        if (qsbDivider != null && dockDivider != null) {
+            if (mDividerAnimator != null) {
+                mDividerAnimator.cancel();
+                mDividerAnimator = null;
+            }
+            if (immediately) {
+                if (mShowSearchBar) {
+                    qsbDivider.setVisibility(View.GONE);
+                    qsbDivider.setAlpha(0f);
+                }
+                dockDivider.setVisibility(View.GONE);
+                dockDivider.setAlpha(0f);
+            } else {
+                mDividerAnimator = new AnimatorSet();
+                if (mShowSearchBar) {
+                    mDividerAnimator.playTogether(ObjectAnimator.ofFloat(qsbDivider, "alpha", 0f),
+                            ObjectAnimator.ofFloat(dockDivider, "alpha", 0f));
+                } else {
+                    mDividerAnimator.play(ObjectAnimator.ofFloat(dockDivider, "alpha", 0f));
+                }
+                mDividerAnimator.addListener(new AnimatorListenerAdapter() {
+                    private boolean cancelled = false;
+                    @Override
+                    public void onAnimationCancel(android.animation.Animator animation) {
+                        cancelled = true;
+                    }
+                    @Override
+                    public void onAnimationEnd(android.animation.Animator animation) {
+                        if (!cancelled) {
+                            if (mShowSearchBar) {
+                                qsbDivider.setVisibility(View.GONE);
+                            }
+                            dockDivider.setVisibility(View.GONE);
+                        }
+                    }
+                });
+                mDividerAnimator.setDuration(sScrollIndicatorFadeOutDuration);
+                mDividerAnimator.start();
+            }
+        }
+    }
 }

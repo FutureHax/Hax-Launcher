@@ -100,6 +100,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.t3hh4xx0r.haxlauncher.DropTarget.DragObject;
+import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
 
 /**
  * Default launcher application.
@@ -247,6 +248,9 @@ public final class Launcher extends Activity
 
     private BubbleTextView mWaitingForResume;
 
+    // Preferences
+    private boolean mShowSearchBar;
+
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
             if (mWorkspace != null) {
@@ -279,6 +283,9 @@ public final class Launcher extends Activity
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
+
+        // Preferences
+        mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
 
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
@@ -346,7 +353,7 @@ public final class Launcher extends Activity
         mSearchDropTargetBar.onSearchPackagesChanged(searchVisible, voiceVisible);
 
         // On large interfaces, we want the screen to auto-rotate based on the current orientation
-        if (LauncherApplication.isScreenLarge() || Build.TYPE.contentEquals("eng")) {
+        if (LauncherApplication.isScreenLarge()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }
@@ -549,6 +556,10 @@ public final class Launcher extends Activity
     protected void onResume() {
         super.onResume();
         mPaused = false;
+        // Restart launcher when preferences are changed
+        if (preferencesChanged()) {
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
         if (mRestoring || mOnResumeNeedsLoad) {
             mWorkspaceLoading = true;
             mModel.startLoader(this, true);
@@ -766,6 +777,11 @@ public final class Launcher extends Activity
 
         // Get the search/delete bar
         mSearchDropTargetBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
+
+        // Hide the search divider if we are hiding search bar
+        if (!mShowSearchBar && getCurrentOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
+            ((View) findViewById(R.id.qsb_divider)).setVisibility(View.GONE);
+        }
 
         // Setup AppsCustomize
         mAppsCustomizeTabHost = (AppsCustomizeTabHost)
@@ -2583,10 +2599,14 @@ public final class Launcher extends Activity
         }
     }
 
+    public int getCurrentOrientation() {
+        return getResources().getConfiguration().orientation;
+    }
+
     /** Maps the current orientation to an index for referencing orientation correct global icons */
     private int getCurrentOrientationIndexForGlobalIcons() {
         // default - 0, landscape - 1
-        switch (getResources().getConfiguration().orientation) {
+        switch (getCurrentOrientation()) {
         case Configuration.ORIENTATION_LANDSCAPE:
             return 1;
         default:
@@ -3217,7 +3237,6 @@ public final class Launcher extends Activity
     }
 
     /* Cling related */
-    private static final String PREFS_KEY = "com.concentriclivers.launcher.prefs";
     private boolean isClingsEnabled() {
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
@@ -3254,7 +3273,7 @@ public final class Launcher extends Activity
                     cling.setVisibility(View.GONE);
                     cling.cleanup();
                     SharedPreferences prefs =
-                        getSharedPreferences("com.concentriclivers.launcher.prefs", Context.MODE_PRIVATE);
+                    getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(flag, true);
                     editor.commit();
@@ -3278,7 +3297,7 @@ public final class Launcher extends Activity
     public void showFirstRunWorkspaceCling() {
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
-            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+            getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
         if (isClingsEnabled() && !prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
             initCling(R.id.workspace_cling, null, false, 0);
         } else {
@@ -3288,7 +3307,7 @@ public final class Launcher extends Activity
     public void showFirstRunAllAppsCling(int[] position) {
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
-            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+            getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
         if (isClingsEnabled() && !prefs.getBoolean(Cling.ALLAPPS_CLING_DISMISSED_KEY, false)) {
             initCling(R.id.all_apps_cling, position, true, 0);
         } else {
@@ -3298,7 +3317,7 @@ public final class Launcher extends Activity
     public Cling showFirstRunFoldersCling() {
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
-            getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+            getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
         Cling cling = null;
         if (isClingsEnabled() && !prefs.getBoolean(Cling.FOLDER_CLING_DISMISSED_KEY, false)) {
             cling = initCling(R.id.folder_cling, null, true, 0);
@@ -3325,6 +3344,18 @@ public final class Launcher extends Activity
     public void dismissFolderCling(View v) {
         Cling cling = (Cling) findViewById(R.id.folder_cling);
         dismissCling(cling, Cling.FOLDER_CLING_DISMISSED_KEY, DISMISS_CLING_DURATION);
+    }
+
+    public boolean preferencesChanged() {
+        SharedPreferences prefs =
+            getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
+        boolean preferencesChanged = prefs.getBoolean(PreferencesProvider.PREFERENCES_CHANGED, false);
+        if (preferencesChanged) {
+            SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(PreferencesProvider.PREFERENCES_CHANGED, false);
+                    editor.commit();
+        }
+        return preferencesChanged;
     }
 
     /**
