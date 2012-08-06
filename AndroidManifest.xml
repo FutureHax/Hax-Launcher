@@ -56,7 +56,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />    
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
-
+	<uses-permission android:name="android.permission.BIND_APPWIDGET"/>
+	
     <application
         android:name="com.t3hh4xx0r.haxlauncher.LauncherApplication"
         android:label="@string/application_name"

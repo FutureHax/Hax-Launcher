@@ -72,6 +72,12 @@ public class AddAdapter extends BaseAdapter {
 
         mItems.add(new ListItem(res, R.string.group_wallpapers,
                 R.drawable.ic_launcher_wallpaper, ITEM_WALLPAPER));
+        //TODO get new drawables for icons.
+        mItems.add(new ListItem(res, R.string.group_shortcuts,
+        		R.drawable.ic_launcher_wallpaper, ITEM_SHORTCUT));
+        
+        mItems.add(new ListItem(res, R.string.group_widgets,
+        		R.drawable.ic_launcher_wallpaper, ITEM_APPWIDGET));
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
