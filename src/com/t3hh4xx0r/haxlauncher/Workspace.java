@@ -56,6 +56,7 @@ import android.graphics.drawable.Drawable;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
@@ -288,12 +289,17 @@ public class Workspace extends SmoothPagedView
             // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
             // Around that ratio we should make cells the same size in portrait and
             // landscape
-            TypedArray actionBarSizeTypedArray =
+        	DisplayMetrics localDisplayMetrics = res.getDisplayMetrics();
+        	TypedArray actionBarSizeTypedArray =
                 context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
             final float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
             final float systemBarHeight = res.getDimension(R.dimen.status_bar_height);
-            final float smallestScreenDim = res.getConfiguration().smallestScreenWidthDp;
-
+            float smallestScreenDim = res.getConfiguration().smallestScreenWidthDp;
+            
+            if (LauncherApplication.isScreenLarge()) {
+            	smallestScreenDim = res.getConfiguration().smallestScreenWidthDp * localDisplayMetrics.density;
+            }
+            
             cellCountX = 1;
             while (CellLayout.widthInPortrait(res, cellCountX + 1) <= smallestScreenDim) {
                 cellCountX++;
