@@ -1339,14 +1339,14 @@ public final class Launcher extends Activity
         if (appSearchData == null) {
             appSearchData = new Bundle();
             // TODO: Fix this comment and the one below.
-//            appSearchData.putString(Search.SOURCE, "launcher-search");
+           appSearchData.putString("source", "launcher-search");
         }
         Rect sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
 
         final SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
-//            appSearchData, globalSearch, sourceBounds);
+        searchManager.startSearch(initialQuery, selectInitialQuery, getComponentName(),
+        	appSearchData, globalSearch);
     }
 
     @Override
@@ -2729,28 +2729,11 @@ public final class Launcher extends Activity
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
 
-        final SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        
-        
-        ComponentName activityName;
-        try
-        {
-            Method getGlobalSearchActivity =
-                     ComponentName.class.getDeclaredMethod("getGlobalSearchActivity");
-            getGlobalSearchActivity.setAccessible(true);
-            
-            activityName = (ComponentName)
-            		getGlobalSearchActivity.invoke(searchManager);
-        }
-        catch (Exception e)
-        {
-        	e.printStackTrace();
-        	return false;
-        }
-        
-//        ComponentName activityName = searchManager.getGlobalSearchActivity();
-        if (activityName != null) {
+        //TODO:Fix this, shouldnt hard code the intent
+        ComponentName activityName = new ComponentName(
+              "com.google.android.googlequicksearchbox"
+              ,"com.google.android.googlequicksearchbox.SearchActivity");
+        if (mShowSearchBar) {
             int coi = getCurrentOrientationIndexForGlobalIcons();
             sGlobalSearchIcon[coi] = updateButtonWithIconFromExternalActivity(
                     R.id.search_button, activityName, R.drawable.ic_home_search_normal_holo);
