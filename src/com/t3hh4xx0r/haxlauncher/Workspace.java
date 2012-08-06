@@ -95,11 +95,11 @@ public class Workspace extends SmoothPagedView
     private static float CAMERA_DISTANCE = 6500;
 
     private static final int CHILDREN_OUTLINE_FADE_OUT_DELAY = 0;
-    private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 375;
-    private static final int CHILDREN_OUTLINE_FADE_IN_DURATION = 100;
+    private static final int CHILDREN_OUTLINE_FADE_OUT_DURATION = 281;
+    private static final int CHILDREN_OUTLINE_FADE_IN_DURATION = 75;
 
-    private static final int BACKGROUND_FADE_OUT_DURATION = 350;
-    private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
+    private static final int BACKGROUND_FADE_OUT_DURATION = 262;
+    private static final int ADJACENT_SCREEN_DROP_DURATION = 225;
 
     // These animators are used to fade the children's outlines
     private ObjectAnimator mChildrenOutlineFadeInAnimation;

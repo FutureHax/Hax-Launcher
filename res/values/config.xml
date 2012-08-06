@@ -6,28 +6,28 @@
     <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
     <integer name="config_appsCustomizeSpringLoadedBgAlpha">45</integer>
     <!-- Fade in/out duration of icons being dragged from the trays -->
-    <integer name="config_dragAppsCustomizeIconFadeInDuration">150</integer>
-    <integer name="config_dragAppsCustomizeIconFadeOutDuration">200</integer>
+    <integer name="config_dragAppsCustomizeIconFadeInDuration">112</integer>
+    <integer name="config_dragAppsCustomizeIconFadeOutDuration">150</integer>
     <integer name="config_dragAppsCustomizeIconFadeAlpha">100</integer>
-    <integer name="config_workspaceUnshrinkTime">300</integer>
+    <integer name="config_workspaceUnshrinkTime">225</integer>
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">80</integer>
     <!-- When items are dropped on the mini screens in customize mode, we have a bounce animation
          of the bright green hover outline, and then fade out the outline at the end. These are
          the values used in that animation -->
-    <integer name="config_screenOnDropScalePercent">120</integer>
-    <integer name="config_screenOnDropScaleUpDuration">200</integer>
-    <integer name="config_screenOnDropScaleDownDuration">200</integer>
+    <integer name="config_screenOnDropScalePercent">90</integer>
+    <integer name="config_screenOnDropScaleUpDuration">150</integer>
+    <integer name="config_screenOnDropScaleDownDuration">150</integer>
     <integer name="config_screenOnDropAlphaFadeDelay">350</integer>
-    <integer name="config_screenOnDropAlphaFadeDuration">50</integer>
+    <integer name="config_screenOnDropAlphaFadeDuration">37</integer>
 
     <!-- Fade/zoom in/out duration & scale in the AllApps transition.
          Note: This should be less than the workspaceShrinkTime as they happen together. -->
-    <integer name="config_appsCustomizeZoomInTime">350</integer>
-    <integer name="config_appsCustomizeZoomOutTime">600</integer>
+    <integer name="config_appsCustomizeZoomInTime">262</integer>
+    <integer name="config_appsCustomizeZoomOutTime">450</integer>
     <integer name="config_appsCustomizeZoomScaleFactor">7</integer>
-    <integer name="config_appsCustomizeFadeInTime">250</integer>
-    <integer name="config_appsCustomizeFadeOutTime">200</integer>
+    <integer name="config_appsCustomizeFadeInTime">187</integer>
+    <integer name="config_appsCustomizeFadeOutTime">150</integer>
     <integer name="config_appsCustomizeWorkspaceShrinkTime">300</integer>
     <integer name="config_appsCustomizeWorkspaceAnimationStagger">40</integer>
     <integer name="config_workspaceAppsCustomizeAnimationStagger">100</integer>
@@ -50,9 +50,9 @@
     <bool name="config_workspaceFadeAdjacentScreens">false</bool>
 
     <!-- The transition duration for the background of the drop targets -->
-    <integer name="config_dropTargetBgTransitionDuration">100</integer>
+    <integer name="config_dropTargetBgTransitionDuration">75</integer>
 
-    <integer name="config_crosshairsFadeInTime">600</integer>
+    <integer name="config_crosshairsFadeInTime">450</integer>
 
     <!--  When dragging an item on the workspace, how much bigger (in pixels) the dragged view
           should be, as compared to the original view. If 0, it will not be scaled at all.
@@ -61,14 +61,14 @@
 
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
-    <integer name="config_dragOutlineFadeTime">900</integer>
+    <integer name="config_dragOutlineFadeTime">675</integer>
 
     <!-- The alpha value at which to show the most recent drop visualization outline. -->
     <integer name="config_dragOutlineMaxAlpha">128</integer>
 
     <!-- Parameters controlling the animation for when an item is dropped on the home screen,
          and it animates from its old position to the new one. -->
-    <integer name="config_dropAnimMaxDuration">500</integer>
+    <integer name="config_dropAnimMaxDuration">375</integer>
 
     <!-- The duration of the UserFolder opening and closing animation -->
     <integer name="config_folderAnimDuration">120</integer>
