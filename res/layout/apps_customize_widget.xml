@@ -34,7 +34,7 @@
         android:layout_marginBottom="4dp"
         android:orientation="horizontal">
         <!-- The name of the widget. -->
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.t3hh4xx0r.haxlauncher.StyledTextFoo xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/widget_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
 
         <!-- The original dimensions of the widget (can't be the same text as above due to different
              style. -->
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.t3hh4xx0r.haxlauncher.StyledTextFoo xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/widget_dims"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

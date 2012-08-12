@@ -23,14 +23,17 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
+
 import com.t3hh4xx0r.haxlauncher.R;
 
 /**
- * This class adds a stroke to the generic TextView allowing the text to stand out better against
+ * This class adds a stroke to the generic StyledTextFoo allowing the text to stand out better against
  * the background (ie. in the AllApps button).
  */
 public class StrokedTextView extends TextView {
@@ -58,17 +61,21 @@ public class StrokedTextView extends TextView {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StrokedTextView,
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.StrokedStyledTextFoo,
                 defStyle, 0);
-        mStrokeColor = a.getColor(R.styleable.StrokedTextView_strokeColor, 0xFF000000);
-        mStrokeWidth = a.getFloat(R.styleable.StrokedTextView_strokeWidth, 0.0f);
-        mTextColor = a.getColor(R.styleable.StrokedTextView_strokeTextColor, 0xFFFFFFFF);
+        mStrokeColor = a.getColor(R.styleable.StrokedStyledTextFoo_strokeColor, 0xFF000000);
+        mStrokeWidth = a.getFloat(R.styleable.StrokedStyledTextFoo_strokeWidth, 0.0f);
+        mTextColor = a.getColor(R.styleable.StrokedStyledTextFoo_strokeTextColor, 0xFFFFFFFF);
         a.recycle();
         mUpdateCachedBitmap = true;
 
         // Setup the text paint
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        
+	     String otfName = "cabnd.otf";
+	     Typeface font = Typeface.createFromAsset(context.getAssets(), otfName);
+	     this.setTypeface(font);
     }
 
     protected void onTextChanged(CharSequence text, int start, int before, int after) {

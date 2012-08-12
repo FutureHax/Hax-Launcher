@@ -66,9 +66,10 @@
 
     <include layout="@layout/hotseat"
         android:id="@+id/hotseat"
-        android:layout_width="@dimen/button_bar_height_plus_padding"
         android:layout_height="match_parent"
+        android:layout_width="@dimen/button_bar_height_plus_padding"
         android:layout_gravity="right" />
+    
     <include
         android:id="@+id/qsb_bar"
         layout="@layout/qsb_bar" />
@@ -90,4 +91,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
+    
+    <include layout="@layout/launcher_menu"
+        android:id="@+id/launcher_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+	<ImageView
+        android:id="@+id/shade"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:src="@drawable/shade" />      
 </com.t3hh4xx0r.haxlauncher.DragLayer>

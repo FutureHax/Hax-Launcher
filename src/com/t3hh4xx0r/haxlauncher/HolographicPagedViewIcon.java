@@ -20,7 +20,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 
 
@@ -28,7 +28,7 @@ import android.widget.TextView;
  * An icon on a PagedView, specifically for items in the launcher's paged view (with compound
  * drawables on the top).
  */
-public class HolographicPagedViewIcon extends TextView  {
+public class HolographicPagedViewIcon extends StyledTextFoo  {
     PagedViewIcon mOriginalIcon;
     Paint mPaint;
 

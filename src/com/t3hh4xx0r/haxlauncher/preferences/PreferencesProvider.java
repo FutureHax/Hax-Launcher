@@ -26,6 +26,21 @@ public final class PreferencesProvider {
         public static class Icons {
 
         }
+
+		public static class  LivePanel {
+        	public static boolean getEnableWeather(Context context) {
+        		final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+        		return preferences.getBoolean("ui_live_weather", true);
+        	}
+        	public static int getWeatherInterval(Context context) {
+        		final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+        		return preferences.getInt("ui_live_weather_interval", 60);
+        	}        	
+        	public static boolean getUseMetric(Context context) {
+        		final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+        		return preferences.getBoolean("ui_live_weather_metric", false);
+        	}        	
+		}
     }
 
     public static class General {

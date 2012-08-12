@@ -316,7 +316,7 @@ public class CellLayout extends ViewGroup {
     void setPressedOrFocusedIcon(BubbleTextView icon) {
         // We draw the pressed or focused BubbleTextView's background in CellLayout because it
         // requires an expanded clip rect (due to the glow's blur radius)
-        BubbleTextView oldIcon = mPressedOrFocusedIcon;
+    	BubbleTextView oldIcon = mPressedOrFocusedIcon;
         mPressedOrFocusedIcon = icon;
         if (oldIcon != null) {
             invalidateBubbleTextView(oldIcon);

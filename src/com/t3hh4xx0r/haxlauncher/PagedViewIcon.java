@@ -24,7 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.Checkable;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.R;
 
@@ -33,7 +33,7 @@ import com.t3hh4xx0r.haxlauncher.R;
  * An icon on a PagedView, specifically for items in the launcher's paged view (with compound
  * drawables on the top).
  */
-public class PagedViewIcon extends TextView implements Checkable {
+public class PagedViewIcon extends StyledTextFoo implements Checkable {
     private static final String TAG = "PagedViewIcon";
 
     // holographic outline

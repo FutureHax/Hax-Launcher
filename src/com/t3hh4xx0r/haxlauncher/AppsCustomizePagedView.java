@@ -735,7 +735,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // Note: We force a measure here to get around the fact that when we do layout calculations
         // immediately after syncing, we don't have a proper width.  That said, we already know the
-        // expected page width, so we can actually optimize by hiding all the TextView-based
+        // expected page width, so we can actually optimize by hiding all the StyledTextFoo-based
         // children that are expensive to measure, and let that happen naturally later.
         setVisibilityOnChildren(layout, View.GONE);
         int widthSpec = MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.AT_MOST);

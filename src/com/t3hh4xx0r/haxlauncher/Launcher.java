@@ -17,6 +17,7 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileDescriptor;
@@ -59,6 +60,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -92,14 +95,20 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 import android.widget.Toast;
 
 import com.t3hh4xx0r.haxlauncher.DropTarget.DragObject;
+import com.t3hh4xx0r.haxlauncher.menu.LauncherMenu;
+import com.t3hh4xx0r.haxlauncher.menu.LauncherMenuTab;
+import com.t3hh4xx0r.haxlauncher.menu.DockItemView;
 import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
 
 /**
@@ -193,7 +202,8 @@ public final class Launcher extends Activity
     private FolderInfo mFolderInfo;
 
     private Hotseat mHotseat;
-    private View mAllAppsButton;
+    public LauncherMenuTab tabMenu;
+    public LauncherMenu phoneMenu;
 
     private SearchDropTargetBar mSearchDropTargetBar;
     private AppsCustomizeTabHost mAppsCustomizeTabHost;
@@ -279,7 +289,7 @@ public final class Launcher extends Activity
         mIconCache = app.getIconCache();
         mDragController = new DragController(this);
         mInflater = getLayoutInflater();
-
+        getMenu();
         mAppWidgetManager = AppWidgetManager.getInstance(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this, APPWIDGET_HOST_ID);
         mAppWidgetHost.startListening();
@@ -358,7 +368,17 @@ public final class Launcher extends Activity
         }
     }
 
-    private void checkForLocaleChange() {
+    private void getMenu() {
+    	if (tabMenu == null && phoneMenu == null) {
+    		if (LauncherApplication.isScreenLarge()) {			
+    			tabMenu = new LauncherMenuTab(this);
+    		} else {
+    			phoneMenu = new LauncherMenu(this);
+    		}
+    	}
+	}
+    
+	private void checkForLocaleChange() {
         if (sLocaleConfiguration == null) {
             new AsyncTask<Void, Void, LocaleConfiguration>() {
                 @Override
@@ -555,6 +575,9 @@ public final class Launcher extends Activity
     @Override
     protected void onResume() {
         super.onResume();
+        if (mHotseat != null) {
+        	mHotseat.resetLayout();
+        }
         mPaused = false;
         // Restart launcher when preferences are changed
         if (preferencesChanged()) {
@@ -790,19 +813,6 @@ public final class Launcher extends Activity
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
         mAppsCustomizeContent.setup(this, dragController);
 
-        // Get the all apps button
-        mAllAppsButton = findViewById(R.id.all_apps_button);
-        if (mAllAppsButton != null) {
-            mAllAppsButton.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
-                        onTouchDownAllAppsButton(v);
-                    }
-                    return false;
-                }
-            });
-        }
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
         dragController.setScrollView(mDragLayer);
@@ -851,6 +861,9 @@ public final class Launcher extends Activity
         final int[] cellXY = mTmpAddItemCellCoordinates;
         final CellLayout layout = getCellLayout(container, screen);
 
+        if (mHotseat.getLayout().getId() == layout.getId()) {
+        	Toast.makeText(getBaseContext(), "DROPPED ON ME MAN", Toast.LENGTH_LONG).show();
+        }
         // First we check if we already know the exact location where we want to add this item.
         if (cellX >= 0 && cellY >= 0) {
             cellXY[0] = cellX;
@@ -1641,10 +1654,6 @@ public final class Launcher extends Activity
                 case KeyEvent.KEYCODE_HOME:
                     return true;
                 case KeyEvent.KEYCODE_VOLUME_DOWN:
-//                    if (SystemProperties.getInt("debug.launcher2.dumpstate", 0) != 0) {
-//                        dumpState();
-//                        return true;
-//                    }
                     break;
             }
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
@@ -1695,6 +1704,85 @@ public final class Launcher extends Activity
         }
     }
 
+    
+    void handleMenuClick(boolean animate) {  
+    	if (LauncherApplication.isScreenLarge()) {			
+	    	if (tabMenu.isVisible()) {
+	    		removeMenu(animate);
+	    	} else {
+	    		addMenu();
+	    	}
+    	} else {
+	    	if (phoneMenu.isVisible()) {
+	    		removeMenu(animate);
+	    	} else {
+	    		addMenu();
+	    	}
+    	}
+    }
+
+    public void addMenu() {
+    	if (LauncherApplication.isScreenLarge()) {			
+    		mDragLayer.addView(tabMenu);
+    	} else {
+    		mDragLayer.addView(phoneMenu);
+    	}
+  		//ImageView menuButton = (ImageView) findViewById(R.id.menu_button);
+  		//menuButton.setImageResource(R.drawable.startmenu_close);
+    }
+        
+    public void removeMenu(boolean animate) {
+        final ImageView shade = (ImageView) findViewById(R.id.shade);
+        final Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_fast);
+        Animation slideLeftOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_left);
+        if (animate) {
+        	shade.startAnimation(fadeOut);
+        	if (LauncherApplication.isScreenLarge()) {			
+        		tabMenu.startAnimation(slideLeftOut);
+        	} else{
+        		phoneMenu.startAnimation(slideLeftOut);
+        	}
+        }
+    	if (LauncherApplication.isScreenLarge()) {			
+            mDragLayer.removeView(tabMenu);
+    	} else{
+            mDragLayer.removeView(phoneMenu);
+    	}
+		shade.setVisibility(View.GONE);
+//  		ImageView menuButton = (ImageView) findViewById(R.id.menu_button);
+//  		menuButton.setImageResource(R.drawable.startmenu_open);
+
+    }
+    
+    public boolean hotseatIsSet(String name) {
+    	DBAdapter db = new DBAdapter(this);
+    	db.open();
+    	Cursor c = db.getAllHotseats();
+    	while (c.moveToNext()) {
+    		if (c.getString(c.getColumnIndex("name")).equalsIgnoreCase(name)) {
+    			c.close();
+    			db.close();
+    			return true;
+    		}
+    	} 
+    	c.close();
+    	db.close();
+    	return false;
+    }
+    
+    public void setHotseat(int pos, Bitmap icon, String name, String i) {
+    	Bitmap photo = icon;
+    	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    	photo.compress(Bitmap.CompressFormat.PNG, 100, bos);
+    	byte[] bArray = bos.toByteArray();  
+
+    	DBAdapter db = new DBAdapter(this);
+    	db.open();
+    	db.insertHotseat(i, bArray, name);
+    	db.close();
+    	phoneMenu.setupHotseats();
+    }
+    
     /**
      * Launches the intent referred by the clicked shortcut.
      *
@@ -1730,12 +1818,6 @@ public final class Launcher extends Activity
                 FolderIcon fi = (FolderIcon) v;
                 handleFolderClick(fi);
             }
-        } else if (v == mAllAppsButton) {
-            if (mState == State.APPS_CUSTOMIZE) {
-                showWorkspace(true);
-            } else {
-                onClickAllAppsButton(v);
-            }
         }
     }
 
@@ -1770,17 +1852,21 @@ public final class Launcher extends Activity
         startActivity(intent);
     }
 
+    public void onClickAllAppsButton(View v) {
+    	handleMenuClick(true);
+    }
+    
     /**
      * Event handler for the "grid" button that appears on the home screen, which
      * enters all apps mode.
      *
      * @param v The view that was clicked.
      */
-    public void onClickAllAppsButton(View v) {
-        showAllApps(true);
+    public void onClickMenuButton(View v) {
+        handleMenuClick(true);
     }
 
-    public void onTouchDownAllAppsButton(View v) {
+    public void onTouchDownMenuButton(View v) {
         // Provide the same haptic feedback that the system offers for virtual keys.
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
     }
@@ -1888,11 +1974,6 @@ public final class Launcher extends Activity
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.5f);
 
         FolderInfo info = (FolderInfo) fi.getTag();
-        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            CellLayout cl = (CellLayout) fi.getParent().getParent();
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) fi.getLayoutParams();
-            cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
-        }
 
         ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
@@ -1905,23 +1986,8 @@ public final class Launcher extends Activity
         PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f);
         PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f);
 
-        FolderInfo info = (FolderInfo) fi.getTag();
-        CellLayout cl = null;
-        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            cl = (CellLayout) fi.getParent().getParent();
-        }
-
-        final CellLayout layout = cl;
         ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(fi, alpha, scaleX, scaleY);
         oa.setDuration(getResources().getInteger(R.integer.config_folderAnimDuration));
-        oa.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (layout != null) {
-                    layout.clearFolderLeaveBehind();
-                }
-            }
-        });
         oa.start();
     }
 
@@ -2030,15 +2096,7 @@ public final class Launcher extends Activity
      * Returns the CellLayout of the specified container at the specified screen.
      */
     CellLayout getCellLayout(long container, int screen) {
-        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            if (mHotseat != null) {
-                return mHotseat.getLayout();
-            } else {
-                return null;
-            }
-        } else {
-            return (CellLayout) mWorkspace.getChildAt(screen);
-        }
+    	return (CellLayout) mWorkspace.getChildAt(screen);
     }
 
     Workspace getWorkspace() {
@@ -2457,11 +2515,6 @@ public final class Launcher extends Activity
             mSearchDropTargetBar.showSearchBar(animated);
             // We only need to animate in the dock divider if we're going from spring loaded mode
             showDockDivider(animated && mState == State.APPS_CUSTOMIZE_SPRING_LOADED);
-
-            // Set focus to the AppsCustomize button
-            if (mAllAppsButton != null) {
-                mAllAppsButton.requestFocus();
-            }
         }
 
         mWorkspace.flashScrollingIndicator(animated);
@@ -2477,7 +2530,7 @@ public final class Launcher extends Activity
         getWindow().getDecorView().sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
-    void showAllApps(boolean animated) {
+    public void showAllApps(boolean animated) {
         if (mState != State.WORKSPACE) return;
 
         showAppsCustomizeHelper(animated, false);
@@ -2485,7 +2538,9 @@ public final class Launcher extends Activity
 
         // Hide the search bar and hotseat
         mSearchDropTargetBar.hideSearchBar(animated);
-
+        //if menu visible POO
+    		removeMenu(false);
+    	
         // Change the state *after* we've called all the transition code
         mState = State.APPS_CUSTOMIZE;
 
@@ -2664,7 +2719,7 @@ public final class Launcher extends Activity
         int w = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_width);
         int h = r.getDimensionPixelSize(R.dimen.toolbar_external_icon_height);
 
-        TextView button = (TextView) findViewById(buttonId);
+        StyledTextFoo button = (StyledTextFoo) findViewById(buttonId);
         // If we were unable to find the icon via the meta-data, use a generic one
         if (toolbarIcon == null) {
             toolbarIcon = r.getDrawable(fallbackDrawableId);
@@ -2703,7 +2758,7 @@ public final class Launcher extends Activity
     }
 
     private void updateTextButtonWithDrawable(int buttonId, Drawable.ConstantState d) {
-        TextView button = (TextView) findViewById(buttonId);
+        StyledTextFoo button = (StyledTextFoo) findViewById(buttonId);
         button.setCompoundDrawables(d.newDrawable(getResources()), null, null, null);
     }
 
@@ -2990,12 +3045,6 @@ public final class Launcher extends Activity
         final Workspace workspace = mWorkspace;
         for (int i=start; i<end; i++) {
             final ItemInfo item = shortcuts.get(i);
-
-            // Short circuit if we are loading dock items for a configuration which has no dock
-            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                    mHotseat == null) {
-                continue;
-            }
 
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
@@ -3300,11 +3349,11 @@ public final class Launcher extends Activity
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
             getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
-        if (isClingsEnabled() && !prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
+        //if (isClingsEnabled() && !prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
             initCling(R.id.workspace_cling, null, false, 0);
-        } else {
-            removeCling(R.id.workspace_cling);
-        }
+        //} else {
+        //    removeCling(R.id.workspace_cling);
+        //}
     }
     public void showFirstRunAllAppsCling(int[] position) {
         // Enable the clings only if they have not been dismissed before

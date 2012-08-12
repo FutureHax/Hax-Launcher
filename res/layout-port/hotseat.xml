@@ -16,7 +16,6 @@
 <com.t3hh4xx0r.haxlauncher.Hotseat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res/com.t3hh4xx0r.haxlauncher"
-    android:background="@drawable/hotseat_bg_panel"
     launcher:cellCountX="5"
     launcher:cellCountY="1">
     <com.t3hh4xx0r.haxlauncher.CellLayout

@@ -19,12 +19,12 @@ package com.t3hh4xx0r.haxlauncher;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 /**
  * We use a custom tab view to process our own focus traversals.
  */
-public class AccessibleTabView extends TextView {
+public class AccessibleTabView extends StyledTextFoo {
     public AccessibleTabView(Context context) {
         super(context);
     }

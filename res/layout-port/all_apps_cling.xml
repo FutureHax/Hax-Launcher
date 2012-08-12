@@ -26,11 +26,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
+            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
                 style="@style/ClingTitleText"
                 android:id="@+id/all_apps_cling_title"
                 android:text="@string/all_apps_cling_title" />
-            <TextView
+            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
                 style="@style/ClingText"
                 android:id="@+id/all_apps_cling_add_item"
                 android:layout_width="285dp"

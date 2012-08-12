@@ -70,8 +70,8 @@
         <attr name="maxGap" format="dimension" />
     </declare-styleable>
 
-    <!-- StrokedTextView specific attributes. -->
-    <declare-styleable name="StrokedTextView">
+    <!-- StrokedStyledTextFoo specific attributes. -->
+    <declare-styleable name="StrokedStyledTextFoo">
         <!-- The color of the stroke outline -->
         <attr name="strokeColor" format="color" />
         <!-- The color of the text -->

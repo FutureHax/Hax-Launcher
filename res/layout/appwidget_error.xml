@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.t3hh4xx0r.haxlauncher.StyledTextFoo xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingTop="10dip"

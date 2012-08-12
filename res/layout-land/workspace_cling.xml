@@ -26,11 +26,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
+            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
                 style="@style/ClingTitleText"
                 android:id="@+id/workspace_cling_title"
                 android:text="@string/workspace_cling_title" />
-            <TextView
+            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
                 style="@style/ClingText"
                 android:id="@+id/workspace_cling_move_item"
                 android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                 android:text="@string/workspace_cling_move_item" />
         </LinearLayout>
     </FrameLayout>
-    <TextView
+    <com.t3hh4xx0r.haxlauncher.StyledTextFoo
         style="@style/ClingText"
         android:id="@+id/workspace_cling_open_all_apps"
         android:layout_width="180dp"

@@ -36,7 +36,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.DropTarget.DragObject;
@@ -298,7 +298,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             final ShortcutInfo srcInfo, final View srcView, Rect dstRect,
             float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
-        Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
+        Drawable animateDrawable = ((StyledTextFoo) destView).getCompoundDrawables()[1];
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
 
         // This will animate the dragView (srcView) into the new folder
@@ -497,13 +497,13 @@ public class FolderIcon extends LinearLayout implements FolderListener {
 
         ArrayList<View> items = mFolder.getItemsInReadingOrder(false);
         Drawable d;
-        TextView v;
+        StyledTextFoo v;
 
         // Update our drawing parameters if necessary
         if (mAnimating) {
             computePreviewDrawingParams(mAnimParams.drawable);
         } else {
-            v = (TextView) items.get(0);
+            v = (StyledTextFoo) items.get(0);
             d = v.getCompoundDrawables()[1];
             computePreviewDrawingParams(d);
         }
@@ -511,7 +511,7 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         int nItemsInPreview = Math.min(items.size(), NUM_ITEMS_IN_PREVIEW);
         if (!mAnimating) {
             for (int i = nItemsInPreview - 1; i >= 0; i--) {
-                v = (TextView) items.get(i);
+                v = (StyledTextFoo) items.get(i);
                 d = v.getCompoundDrawables()[1];
 
                 mParams = computePreviewItemDrawingParams(i, mParams);

@@ -31,7 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.R;
 
@@ -150,7 +150,7 @@ public class InstallWidgetReceiver {
             final CharSequence component = resolveInfo.loadLabel(packageManager);
             final int[] widgetSpan = new int[2];
             mTargetLayout.rectToCell(widgetInfo.minWidth, widgetInfo.minHeight, widgetSpan);
-            TextView t = (TextView) convertView.findViewById(R.id.provider);
+            StyledTextFoo t = (StyledTextFoo) convertView.findViewById(R.id.provider);
             t.setText(context.getString(R.string.external_drop_widget_pick_format,
                     component, widgetSpan[0], widgetSpan[1]));
 

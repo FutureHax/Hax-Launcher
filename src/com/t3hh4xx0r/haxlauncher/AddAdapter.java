@@ -23,7 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import java.util.ArrayList;
 
@@ -87,7 +87,7 @@ public class AddAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.add_list_item, parent, false);
         }
 
-        TextView textView = (TextView) convertView;
+        StyledTextFoo textView = (StyledTextFoo) convertView;
         textView.setTag(item);
         textView.setText(item.text);
         textView.setCompoundDrawablesWithIntrinsicBounds(item.image, null, null, null);

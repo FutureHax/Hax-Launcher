@@ -27,11 +27,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
+            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
                 style="@style/ClingTitleText"
                 android:id="@+id/workspace_cling_title"
                 android:text="@string/workspace_cling_title" />
-            <TextView
+            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
                 style="@style/ClingText"
                 android:id="@+id/workspace_cling_move_item"
                 android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                 android:text="@string/workspace_cling_move_item" />
         </LinearLayout>
     </FrameLayout>
-    <TextView
+    <com.t3hh4xx0r.haxlauncher.StyledTextFoo
         style="@style/ClingText"
         android:id="@+id/workspace_cling_open_all_apps"
         android:layout_width="match_parent"
@@ -49,12 +49,13 @@
         android:layout_marginBottom="130dp"
         android:layout_gravity="bottom"
         android:gravity="center"
-        android:text="@string/workspace_cling_open_all_apps" />
+        android:text="to see your menu, touch the circle. Or to see all your apps, long press it." />
+    
     <Button
         style="@style/ClingButton"
         android:id="@+id/cling_dismiss"
         android:layout_marginBottom="15dp"
         android:layout_marginRight="10dp"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|center"
         android:onClick="dismissWorkspaceCling" />
 </com.t3hh4xx0r.haxlauncher.Cling>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+       		
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp">
+
+	    <RelativeLayout
+	        android:id="@+id/back"
+	        android:visibility="gone"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content">
+
+	   		<com.t3hh4xx0r.haxlauncher.StyledTextFoo
+	   		    android:id="@+id/text"
+	   		    android:layout_width="wrap_content"
+	   		    android:layout_height="wrap_content"
+	   		    android:layout_centerHorizontal="false"
+	   		    android:layout_centerVertical="true"
+	   		    android:layout_marginLeft="10dp"
+	   		    android:layout_toRightOf="@+id/icon"
+	   		    android:text="Back"
+	   		    android:textAppearance="?android:attr/textAppearanceLarge"
+	   		    android:textSize="30sp" />
+ 
+    		<ImageView
+        		android:id="@+id/icon"
+        		android:layout_width="30dp"
+        		android:layout_height="30dp"
+	       		android:src="@drawable/startmenu_arrow_left" />	                
+	    </RelativeLayout> 
+	        
+	        
+        <ViewFlipper
+            android:layout_below="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/dock_holder"
+            android:id="@+id/flipper">
+            
+	        <LinearLayout
+	            android:id="@+id/menu_main"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:orientation="vertical" >
+
+	            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
+	                android:id="@+id/all_apps"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="All Apps"
+	                android:textSize="50sp"
+	                android:textAppearance="?android:attr/textAppearanceLarge" />
+	            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
+	                android:id="@+id/main_search"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Search"
+	                android:textSize="50sp"
+	                android:textAppearance="?android:attr/textAppearanceLarge"/>
+	            <com.t3hh4xx0r.haxlauncher.StyledTextFoo
+	                android:id="@+id/main_settings"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="Settings"
+	                android:textSize="50sp"
+	                android:textAppearance="?android:attr/textAppearanceLarge" />            
+	        </LinearLayout>
+	        
+		    <include
+	            android:id="@+id/menu_search"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            layout="@layout/menu_search" />
+	    
+	    </ViewFlipper>	        
+
+        <ScrollView
+            android:id="@+id/dock_holder"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="64dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true" >
+
+            <LinearLayout
+                android:id="@+id/dock"
+	            android:gravity="center"
+	            android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />	            
+        </ScrollView>
+
+    </RelativeLayout>
+
+</RelativeLayout>    

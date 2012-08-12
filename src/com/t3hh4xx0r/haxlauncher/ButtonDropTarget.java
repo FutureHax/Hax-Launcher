@@ -20,7 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.R;
 
@@ -28,13 +28,13 @@ import com.t3hh4xx0r.haxlauncher.R;
 /**
  * Implements a DropTarget.
  */
-public class ButtonDropTarget extends TextView implements DropTarget, DragController.DragListener {
+public class ButtonDropTarget extends StyledTextFoo implements DropTarget, DragController.DragListener {
 
     protected final int mTransitionDuration;
 
     protected Launcher mLauncher;
     private int mBottomDragPadding;
-    protected TextView mText;
+    protected StyledTextFoo mText;
     protected SearchDropTargetBar mSearchDropTargetBar;
 
     /** Whether this drop target is active for the current drag */

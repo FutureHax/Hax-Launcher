@@ -20,7 +20,7 @@
     android:padding="20dip"
     android:orientation="vertical">
 
-    <TextView 
+    <com.t3hh4xx0r.haxlauncher.StyledTextFoo 
         android:id="@+id/label"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

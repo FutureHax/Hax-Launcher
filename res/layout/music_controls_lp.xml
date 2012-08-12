@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/exp_music_controls"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal" >
+
+        <ImageButton android:id="@+id/albumArt"
+            android:layout_width="75dip"
+            android:layout_height="75dip"
+            android:src="@drawable/default_artwork"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:padding = "3dp"
+            />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <com.t3hh4xx0r.haxlauncher.StyledTextFoo
+            android:id="@+id/musicNowPlayingInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollHorizontally="true"
+            android:ellipsize="marquee"
+            android:paddingTop="10dip"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_toRightOf="@+id/albumArt"
+            android:lines="1"
+            />
+
+        <ImageButton
+            android:id="@+id/musicControlPrevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/media_previous"
+            android:padding="10dp"
+            android:background="@android:color/transparent"
+            android:layout_toLeftOf="@+id/musicControlPlayPause"
+            android:layout_below="@+id/musicNowPlayingInfo"
+            />
+
+        <ImageButton
+            android:id="@+id/musicControlPlayPause"
+            android:src="@drawable/media_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="10dp"
+            android:background="@android:color/transparent"
+            android:layout_below="@+id/musicNowPlayingInfo"
+            />
+
+        <ImageButton
+            android:id="@+id/musicControlNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/media_next"
+            android:layout_toRightOf="@+id/musicControlPlayPause"
+            android:padding="10dp"
+            android:background="@android:color/transparent"
+            android:layout_below="@+id/musicNowPlayingInfo"
+            />
+   </RelativeLayout>
+</LinearLayout>

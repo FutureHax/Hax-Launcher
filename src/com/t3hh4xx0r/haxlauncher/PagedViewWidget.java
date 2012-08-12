@@ -32,7 +32,7 @@ import android.view.MotionEvent;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.R;
 
@@ -117,9 +117,9 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         }
         image.setContentDescription(info.label);
         mPreviewImageView = image;
-        final TextView name = (TextView) findViewById(R.id.widget_name);
+        final StyledTextFoo name = (StyledTextFoo) findViewById(R.id.widget_name);
         name.setText(info.label);
-        final TextView dims = (TextView) findViewById(R.id.widget_dims);
+        final StyledTextFoo dims = (StyledTextFoo) findViewById(R.id.widget_dims);
         if (dims != null) {
             dims.setText(String.format(mDimensionsFormatString, cellSpan[0], cellSpan[1]));
         }
@@ -132,9 +132,9 @@ public class PagedViewWidget extends LinearLayout implements Checkable {
         final ImageView image = (ImageView) findViewById(R.id.widget_preview);
         image.setContentDescription(label);
         mPreviewImageView = image;
-        final TextView name = (TextView) findViewById(R.id.widget_name);
+        final StyledTextFoo name = (StyledTextFoo) findViewById(R.id.widget_name);
         name.setText(label);
-        final TextView dims = (TextView) findViewById(R.id.widget_dims);
+        final StyledTextFoo dims = (StyledTextFoo) findViewById(R.id.widget_dims);
         if (dims != null) {
             dims.setText(String.format(mDimensionsFormatString, 1, 1));
         }

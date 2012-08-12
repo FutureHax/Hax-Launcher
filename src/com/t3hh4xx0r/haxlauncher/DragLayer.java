@@ -39,7 +39,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import android.view.ViewGroup;
 
@@ -452,8 +452,8 @@ public class DragLayer extends FrameLayout implements ViewGroup.OnHierarchyChang
         float scale = getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
         int toX = coord[0];
         int toY = coord[1];
-        if (child instanceof TextView) {
-            TextView tv = (TextView) child;
+        if (child instanceof StyledTextFoo) {
+            StyledTextFoo tv = (StyledTextFoo) child;
             Drawable d = tv.getCompoundDrawables()[1];
 
             // Center in the y coordinate about the target's drawable
