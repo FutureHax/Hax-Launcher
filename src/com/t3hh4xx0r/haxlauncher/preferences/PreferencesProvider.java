@@ -44,6 +44,12 @@ public final class PreferencesProvider {
     }
 
     public static class General {
-
+      	public static boolean[] getPushChannels(Context context) {
+      		boolean values[] = new boolean[2];
+    		final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+    		values[0] = preferences.getBoolean("_push_enable", true);    		
+    		values[1] = preferences.getBoolean("_push_channel_test", true);    		
+    		return values;
+    	}
     }
 }

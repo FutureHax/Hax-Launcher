@@ -22,9 +22,10 @@ import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 import android.widget.Toast;
 
 import com.t3hh4xx0r.haxlauncher.R;
+import com.t3hh4xx0r.haxlauncher.menu.LivePanel;
 import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
 
-public class WeatherLivePanel extends RelativeLayout {
+public class WeatherLivePanel extends LivePanel {
 	
     private StyledTextFoo mWeatherCity, mWeatherCondition, mWeatherLowHigh, mWeatherTemp, mUpdateTime;
     private ImageView mWeatherImage;

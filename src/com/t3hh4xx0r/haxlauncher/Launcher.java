@@ -78,6 +78,7 @@ import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
@@ -102,6 +103,9 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.parse.Parse;
+import com.parse.PushService;
 import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 import android.widget.Toast;
 
@@ -257,10 +261,12 @@ public final class Launcher extends Activity
 
 
     private BubbleTextView mWaitingForResume;
-
+       
     // Preferences
     private boolean mShowSearchBar;
-
+    private boolean mEnablePush;
+    private boolean mPushChannelTest;;
+    
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
             if (mWorkspace != null) {
@@ -284,6 +290,9 @@ public final class Launcher extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ParseHelper.init(this);
+        
+        Log.d("SIZE!", Integer.toString(getSize()));
         LauncherApplication app = ((LauncherApplication)getApplication());
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();
@@ -296,7 +305,16 @@ public final class Launcher extends Activity
 
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
-
+        mEnablePush = PreferencesProvider.General.getPushChannels(this)[0];
+        if (mEnablePush && PreferencesProvider.General.getPushChannels(this)[1]) {
+        	mPushChannelTest = true;
+        } else {
+        	mPushChannelTest = false;
+        }
+        if (mEnablePush) {
+        	registerPush();
+        }
+        
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
                     Environment.getExternalStorageDirectory() + "/launcher");
@@ -368,7 +386,25 @@ public final class Launcher extends Activity
         }
     }
 
-    private void getMenu() {
+    private int getSize() {
+        Display display = this.getWindowManager().getDefaultDisplay();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        display.getMetrics(displayMetrics);
+
+        int width = displayMetrics.widthPixels / displayMetrics.densityDpi;
+        int height = displayMetrics.heightPixels / displayMetrics.densityDpi;
+
+    	return width;
+	}
+
+	private void registerPush() {
+		PushService.subscribe(this, "", Launcher.class);
+    	if (mPushChannelTest) {
+    		PushService.subscribe(this, "testing", Launcher.class);
+    	}
+	}
+
+	private void getMenu() {
     	if (tabMenu == null && phoneMenu == null) {
     		if (LauncherApplication.isScreenLarge()) {			
     			tabMenu = new LauncherMenuTab(this);

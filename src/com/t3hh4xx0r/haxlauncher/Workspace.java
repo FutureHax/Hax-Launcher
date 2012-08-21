@@ -54,6 +54,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.os.IBinder;
@@ -64,11 +65,15 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 import android.widget.Toast;
 
@@ -2931,10 +2936,16 @@ public class Workspace extends SmoothPagedView
     }
 
     private void animateDock(CellLayout layout) {
-    	if (inside) {
-    		layout.setBackgroundColor(getResources().getColor(android.R.color.holo_blue_bright));
+		if (inside) {
+    		layout.setBackgroundResource(R.drawable.icon_frame);
+    		for (int i=0;i<layout.getChildCount();i++) {
+    			layout.getChildAt(i).setVisibility(View.INVISIBLE);
+    		}
     	} else {
-    		layout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+    		layout.setBackgroundColor(getResources().getColor(android.R.color.transparent));    		    		
+    		for (int i=0;i<layout.getChildCount();i++) {
+    			layout.getChildAt(i).setVisibility(View.VISIBLE);
+    		}
     	}
 	}
 

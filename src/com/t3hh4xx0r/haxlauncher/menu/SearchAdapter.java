@@ -105,9 +105,7 @@ public class SearchAdapter extends BaseAdapter {
 	       					holder.setImageBitmap((Bitmap) tmpIcon);
 	            	   } else if (tmpIcon instanceof Drawable){
 	            		   holder.setImageDrawable((Drawable) tmpIcon);
-	            	   } else if (tmpIcon == null) {
-	            		   Log.d("Fuck Your Life","SHITCOCK");
-	            	   }
+	            	   } 
 	               }
 	         });		    			    		    	
 	    }

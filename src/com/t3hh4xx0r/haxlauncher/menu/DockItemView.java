@@ -2,12 +2,15 @@ package com.t3hh4xx0r.haxlauncher.menu;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Point;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -88,7 +91,7 @@ public class DockItemView extends RelativeLayout {
               	mStartPoint.y = (int) event.getY();
               	break;              	
       	}
-        return super.onTouchEvent(event);
+        return true;
     }
 
     public void setData(String d) {
@@ -156,4 +159,16 @@ public class DockItemView extends RelativeLayout {
 	    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    ctx.startActivity(intent);
 	}	
+	
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+	    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	    
+	    Display display = ((Activity) ctx).getWindowManager().getDefaultDisplay();
+	    DisplayMetrics displayMetrics = new DisplayMetrics();
+	    display.getMetrics(displayMetrics);
+
+	    int width = displayMetrics.widthPixels;
+	    setMeasuredDimension((width/3)*1, 150);
+	}
  }
