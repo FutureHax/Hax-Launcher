@@ -16,7 +16,17 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:id="@+id/flipper">
-            
+
+			<GridView 
+			    android:id="@+id/gridview"
+				android:listSelector="@android:color/transparent"    
+			    android:stretchMode="columnWidth"
+			    android:layout_width="wrap_content" 
+			    android:layout_height="wrap_content"
+			    android:numColumns="4"
+			    android:gravity="center">
+			</GridView>   
+
 		    <include
 	            android:id="@+id/menu_main"
 	            android:layout_width="wrap_content"
@@ -32,17 +42,24 @@
 	    </ViewFlipper>	  
 	    
 	    <RelativeLayout
-	        android:id="@+id/back"
-	        android:visibility="invisible"
+	        android:id="@+id/arrow"
 	        android:gravity="center_horizontal"
             android:layout_width="match_parent"
 	        android:layout_height="wrap_content">
  
     		<ImageView
-        		android:id="@+id/icon"
+        		android:id="@+id/left"
+	       		android:visibility="gone"
         		android:layout_width="30dp"
         		android:layout_height="30dp"
-	       		android:src="@drawable/startmenu_arrow_left" />	                
+	       		android:src="@drawable/startmenu_arrow_left" />	
+	       		
+    		<ImageView
+        		android:id="@+id/right"
+	       		android:visibility="gone"
+        		android:layout_width="30dp"
+        		android:layout_height="30dp"
+	       		android:src="@drawable/startmenu_arrow_right" />	    		
 	    </RelativeLayout> 
         	    
         <ScrollView

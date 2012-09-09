@@ -62,14 +62,10 @@ public class DockItemView extends RelativeLayout {
               	int diffYU = Math.abs(((int) event.getY()) - mStartPoint.y);
               	int diffXU = Math.abs(((int) event.getX()) - mStartPoint.x);
               	if (!handled) {
-              		Log.d("UP!!!!!!!!", Integer.toString(diffYU)+":"+Integer.toString(diffXU));
               		if (diffYU < 10 && diffXU < 10) {              	
               			startApplication(getPName());
-              		} else {
-              			
-              		}
+              		} 
               	} 
-          		Log.d("UP!!!!!!!!", Boolean.toString(handled));
              return handled;
          	case MotionEvent.ACTION_MOVE:
               	int diffXM = ((int) event.getX()) - mStartPoint.x;
@@ -169,6 +165,8 @@ public class DockItemView extends RelativeLayout {
 	    display.getMetrics(displayMetrics);
 
 	    int width = displayMetrics.widthPixels;
-	    setMeasuredDimension((width/3)*1, 150);
+	    int height = displayMetrics.heightPixels;
+	    height = (int) + (height - getResources().getDimension(R.dimen.button_bar_height) - LauncherMenu.getSBHeight() - 5);
+	    setMeasuredDimension((width/3), (height/5));
 	}
  }

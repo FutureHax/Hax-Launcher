@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -61,6 +62,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -81,7 +83,7 @@ public class LauncherMenu extends RelativeLayout {
     private Launcher mLauncher;
     private View root;
     private ViewFlipper flipper;
-    RelativeLayout back;
+    RelativeLayout arrow;
     EditText searchBox;
     boolean attatched = false;
     static Context mContext;
@@ -112,9 +114,12 @@ public class LauncherMenu extends RelativeLayout {
     ViewGroup panelHolder;
     Editor e;
     int tCount = 0;
-    boolean showJeff = false;
+    boolean showJeff = true;
     RelativeLayout.LayoutParams lp;
     int height;
+    ImageView left;
+    ImageView right;
+    GridView settings_grid;
     
     public LauncherMenu(final Context context) {
         this(context, null, 0);
@@ -141,11 +146,18 @@ public class LauncherMenu extends RelativeLayout {
         
 
         dHolder = (ScrollView) root.findViewById(R.id.dock_holder);
-        back = (RelativeLayout) root.findViewById(R.id.back);
-        back.setOnClickListener(listener);
+        left = (ImageView) root.findViewById(R.id.left);
+        left.setOnClickListener(listener);
+        right = (ImageView) root.findViewById(R.id.right);
+        right.setOnClickListener(listener);
         ImageView mainSearch = (ImageView) root.findViewById(R.id.main_search);
         mainSearch.setOnClickListener(listener);
-        
+        ImageView mainSettings = (ImageView) root.findViewById(R.id.main_settings);
+        mainSettings.setOnClickListener(listener);
+
+        settings_grid = (GridView) root.findViewById(R.id.gridview);
+        MenuSettingsAdapter gridA = new MenuSettingsAdapter(mContext);
+        settings_grid.setAdapter(gridA);
         searchBox = (EditText) root.findViewById(R.id.search_box);
         final ListView list = (ListView) root.findViewById(R.id.list);
         list.setOnItemClickListener(new OnItemClickListener() {
@@ -154,19 +166,25 @@ public class LauncherMenu extends RelativeLayout {
 					int pos, long id) {
 				boolean found = false;
 				 List<ApplicationInfo> applications = v.getContext().getPackageManager().getInstalledApplications(0);
-				 for (int n=0; n < applications.size(); n++) {
-					if (applications.get(n).loadLabel(v.getContext().getPackageManager()).equals((list.getItemAtPosition(pos)))) {							
-						startApplication(applications.get(n).packageName);
-						found = true;
-						break;
-					}
-				 }
-				 
-				 if(!found) {
-					 Intent i = new Intent(); 
-					 i.setAction(ContactsContract.Intents.SHOW_OR_CREATE_CONTACT); 
-					 i.setData(Uri.fromParts("tel", parsePhone(list.getItemAtPosition(pos).toString()), null)); 
-					 v.getContext().startActivity(i);
+				 if (pos != 0) {
+					 for (int n=0; n < applications.size(); n++) {
+						if (applications.get(n).loadLabel(v.getContext().getPackageManager()).equals((list.getItemAtPosition(pos)))) {							
+							startApplication(applications.get(n).packageName);
+							found = true;
+							break;
+						}
+					 }
+					 
+					 if(!found) {
+						 Intent i = new Intent(); 
+						 i.setAction(ContactsContract.Intents.SHOW_OR_CREATE_CONTACT); 
+						 i.setData(Uri.fromParts("tel", parsePhone(list.getItemAtPosition(pos).toString()), null)); 
+						 v.getContext().startActivity(i);
+					 }
+				 } else {
+					 Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+					 intent.putExtra(SearchManager.QUERY, list.getItemAtPosition(pos).toString().replaceAll("\"", "").replace("Search the web for", ""));
+					 v.getContext().startActivity(intent);
 				 }
 			}
         });
@@ -187,6 +205,9 @@ public class LauncherMenu extends RelativeLayout {
 					int before, int count) {
 				int length = searchBox.getText().length();
 				arr_sort.clear();
+				if (length != 0) {
+					arr_sort.add("Search the web for \""+s.toString()+"\"");
+				}
 				for(int i=0;i<lv_arr.length;i++){
 					if(length<=lv_arr[i].length() && length != 0){
 						if(searchBox.getText().toString().equalsIgnoreCase((String) lv_arr[i].subSequence(0, length))){
@@ -228,7 +249,8 @@ public class LauncherMenu extends RelativeLayout {
     
     @Override
     protected void onAttachedToWindow() {
-    	prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+    	flipper.setDisplayedChild(1);
+    	prefs = PreferenceManager.getDefaultSharedPreferences(mContext);    	
     	e = prefs.edit();
     	attatched = true;
         tCount = prefs.getInt("_interalCount", 0)+1;
@@ -259,6 +281,9 @@ public class LauncherMenu extends RelativeLayout {
 			}		
 			d.execute(dArray);
 		}
+		
+		left.setVisibility(View.GONE);
+		right.setVisibility(View.GONE);
 		super.onAttachedToWindow();
     }
     
@@ -271,7 +296,7 @@ public class LauncherMenu extends RelativeLayout {
 				(int) + (height - getResources().getDimension(R.dimen.button_bar_height) - getSBHeight() - indicatorHeight));
 	}
 
-	private int getSBHeight() {
+	static int getSBHeight() {
 		DisplayMetrics displayMetrics = new DisplayMetrics();
     	((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
 		int statusBarHeight;
@@ -339,13 +364,7 @@ public class LauncherMenu extends RelativeLayout {
 				panelHolder.addView((TextView) panel[i], lp);
 			}
 		}
-			
-//		if (count >= 1) {
-//			panel[1] = new MusicControlsLivePanel(context);
-//			((MusicControlsLivePanel) panel[1]).setId(WEATHER_PANEL_ID);
-//			panelHolder.addView(((MusicControlsLivePanel) panel[1]), lp);
-//			((MusicControlsLivePanel) panel[1]).setOnClickListener(listener);
-//		}
+
 	}
 	
 	private int getPanelCount(Context c) {
@@ -355,12 +374,12 @@ public class LauncherMenu extends RelativeLayout {
 		if (aM.isWiredHeadsetOn() || aM.isMusicActive()) {
 			panels.add("music");
 		} 
-		if (calendar.get(Calendar.HOUR) > 11 && calendar.get(Calendar.HOUR) <15 && showJeff) {
+		if (calendar.get(Calendar.HOUR) > 10 && calendar.get(Calendar.HOUR) < 20 && showJeff) {
 			if (tCount == 0) {
 				panels.add("jeff");
 			} else {
 				int last = prefs.getInt("_lastJeff", 0);
-				if (last+20 == tCount) {
+				if (last+10 == tCount) {
 					panels.add("jeff");
 				}
 			}
@@ -408,15 +427,16 @@ public class LauncherMenu extends RelativeLayout {
 		public void onClick(View v) {
 			if (v.getId() == R.id.main_search) {
 				searchBox.setText("");
-				flipTo(1);
-//			} else if (v.getId() == R.id.back) {
-//				flipTo(0);
+				flipTo(2);
 			} else if (v.getId() == R.id.all_apps) {
 				mLauncher.showAllApps(true);
-			//} else if (v.getId() == R.id.settings) {
-			} else if (v.getId() == R.id.back) {
+			} else if (v.getId() == R.id.main_settings) {
+				flipTo(0);
+			} else if (v.getId() == R.id.left) {
 				searchBox.setText("");
 				flipTo(flipper.getDisplayedChild()-1);
+			} else if (v.getId() == R.id.right) {
+				flipTo(flipper.getDisplayedChild()+1);
 			} else if (v.getId() == WEATHER_PANEL_ID) {
 				if (!((WeatherLivePanel)panel[0]).mHandler.hasMessages(WeatherLivePanel.QUERY_WEATHER)) {
 					((WeatherLivePanel)panel[0]).mHandler.sendEmptyMessage(WeatherLivePanel.QUERY_WEATHER);
@@ -465,18 +485,24 @@ public class LauncherMenu extends RelativeLayout {
 	}
 	
 	public void flipTo(int where) {
-		if (where == 0) {
-			back.setVisibility(View.INVISIBLE);
-			back.setAnimation(slideRightOut);
-		} else{
-			back.setVisibility(View.VISIBLE);
-			back.setAnimation(slideRightIn);
-		}
+		int home = 1;
+		
 		if (where != flipper.getDisplayedChild()) {
 			if (where > flipper.getDisplayedChild()) {
-				inFromRight();				
+				inFromRight();		
+				left.setVisibility(View.VISIBLE);
+				right.setVisibility(View.GONE);
+				
 			} else {
 				inFromLeft();
+				left.setVisibility(View.GONE);
+				right.setVisibility(View.VISIBLE);
+
+			}
+			
+			if (where == home) {
+				left.setVisibility(View.GONE);
+				right.setVisibility(View.GONE);
 			}
 			flipper.setDisplayedChild(where);
 		}
