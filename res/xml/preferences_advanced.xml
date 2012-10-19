@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+     android:title="@string/preferences_interface_homescreen_general_category">
+     
+<!-- 	<CheckBoxPreference android:key="com.t3hh4xx0r.haxlauncher.general_advanced_enable_root" -->
+<!-- 		android:title="@string/preferences_general_advanced_has_root_title" -->
+<!--       	android:summary="@string/preferences_general_advanced_has_root_summary" -->
+<!--       	android:defaultValue="true" /> -->
+
+	<CheckBoxPreference android:key="com.t3hh4xx0r.haxlauncher.general_advanced_enable_root"
+		android:title="@string/preferences_general_advanced_enable_root_title"
+      	android:summary="@string/preferences_general_advanced_enable_root_summary_off"
+      	android:defaultValue="false" />
+                
+ </PreferenceScreen>

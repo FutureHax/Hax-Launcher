@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.Point;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -34,6 +35,10 @@ public class DockItemView extends RelativeLayout {
 	ImageView icon;
 	StyledTextFoo title;
 	View root;
+
+    public DockItemView(Context context, AttributeSet attrs) {
+        this(context);
+    }
     
 	public DockItemView(final Context context) {
 		super(context);
@@ -49,12 +54,14 @@ public class DockItemView extends RelativeLayout {
 				startApplication(getPName());				
 			}
         });
+        
 	}
 
+    
 	@Override
     public boolean onTouchEvent(MotionEvent event) {
 		boolean handled = false;
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {    	
+		switch (event.getAction()) {    	
 			case MotionEvent.ACTION_CANCEL:
           		reset();
 			case MotionEvent.ACTION_UP:
@@ -66,20 +73,26 @@ public class DockItemView extends RelativeLayout {
               			startApplication(getPName());
               		} 
               	} 
+
              return handled;
          	case MotionEvent.ACTION_MOVE:
-              	int diffXM = ((int) event.getX()) - mStartPoint.x;
-                scrollTo(-diffXM, 0);
-                double alpha = (1-Math.abs(((double)diffXM))/50);
-                this.setAlpha((float)alpha);
-              	if (Math.abs(diffXM) >= (this.getWidth() * .75)) {
-                   	parent.removeView(item);
-                   	DBAdapter db = new DBAdapter(ctx);
-                   	db.open();
-                   	db.removeHotseat(getData());
-                   	db.close();
-                   	handled = true;
-                   	return true;
+              	double diffXM = ((int) event.getX()) - mStartPoint.x;
+              	double width = this.getWidth();
+              	if (Math.abs(diffXM) >= 10) {
+             		this.getParent().requestDisallowInterceptTouchEvent(true);
+	              	scrollTo((int) -diffXM, 0);
+	                double alpha = 1-(Math.abs(diffXM)/(.75 * width));
+	                this.setAlpha((float)alpha);
+	
+	                if (Math.abs(diffXM) >= (this.getWidth() * .75)) {
+	                	parent.removeView(item);
+		                DBAdapter db = new DBAdapter(ctx);
+		                db.open();
+		                db.removeHotseat(getData());
+		                db.close();
+		                handled = true;
+		                return true;
+	                }              	
               	}
             	break;
         	case MotionEvent.ACTION_DOWN:
@@ -104,7 +117,7 @@ public class DockItemView extends RelativeLayout {
 
     private void reset() {
         scrollTo(0, 0);
-        this.setAlpha(1);
+        setAlpha(1);
     }
     
     public void setId(int id) {

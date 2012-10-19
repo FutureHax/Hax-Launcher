@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+O * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package com.t3hh4xx0r.haxlauncher.menu;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,6 +34,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -39,19 +42,13 @@ import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,20 +59,20 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
 import com.t3hh4xx0r.haxlauncher.Launcher;
 import com.t3hh4xx0r.haxlauncher.R;
-import com.t3hh4xx0r.haxlauncher.menu.livepanel.music.MusicControlsLivePanel;
-import com.t3hh4xx0r.haxlauncher.menu.livepanel.weather.WeatherLivePanel;
+import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
+
+import dalvik.system.PathClassLoader;
 
 public class LauncherMenu extends RelativeLayout {
     SharedPreferences prefs;
@@ -83,7 +80,6 @@ public class LauncherMenu extends RelativeLayout {
     private Launcher mLauncher;
     private View root;
     private ViewFlipper flipper;
-    RelativeLayout arrow;
     EditText searchBox;
     boolean attatched = false;
     static Context mContext;
@@ -92,12 +88,14 @@ public class LauncherMenu extends RelativeLayout {
     public DockItemView hotseat[];
     Object panel[];
     Cursor c;
-    ArrayList<String> panels;
     ScrollView dHolder;
     
-    public static final int WEATHER_PANEL_ID = 9999;
     public static final int MUSIC_PANEL_ID = 9998;
-    public static final int JEFF_PANEL_ID = 9997;
+    
+    public static final int WIFI_TOGGLE = 00;
+    public static final int AIRPLANE_TOGGLE = 01;
+    public static final int ROTATE_TOGGLE = 02;
+    public static final int SOUND_TOGGLE = 03;
     
     private static final int LOW_DPI_STATUS_BAR_HEIGHT = 19;
     private static final int MEDIUM_DPI_STATUS_BAR_HEIGHT = 25;
@@ -105,7 +103,8 @@ public class LauncherMenu extends RelativeLayout {
     private static final int XHIGH_DPI_STATUS_BAR_HEIGHT = 50;
     //TODO fix me
     private static final int TV_DPI_STATUS_BAR_HEIGHT = 50;
-    
+    public static final String PREFERENCES_KEY = "plugin_preferences";
+
     private static Animation slideLeftIn;
     private static Animation slideLeftOut;
     private static Animation slideInDown;
@@ -114,12 +113,13 @@ public class LauncherMenu extends RelativeLayout {
     ViewGroup panelHolder;
     Editor e;
     int tCount = 0;
-    boolean showJeff = true;
     RelativeLayout.LayoutParams lp;
     int height;
     ImageView left;
     ImageView right;
-    GridView settings_grid;
+    
+    String enabledToggles[] = {"WiFi", "Sound", "Rotation", "Airplane"};
+    int enabledTogglesId[] = {WIFI_TOGGLE, SOUND_TOGGLE, ROTATE_TOGGLE, AIRPLANE_TOGGLE};
     
     public LauncherMenu(final Context context) {
         this(context, null, 0);
@@ -144,7 +144,6 @@ public class LauncherMenu extends RelativeLayout {
 		
         root.setLayoutParams(lp);
         
-
         dHolder = (ScrollView) root.findViewById(R.id.dock_holder);
         left = (ImageView) root.findViewById(R.id.left);
         left.setOnClickListener(listener);
@@ -154,10 +153,10 @@ public class LauncherMenu extends RelativeLayout {
         mainSearch.setOnClickListener(listener);
         ImageView mainSettings = (ImageView) root.findViewById(R.id.main_settings);
         mainSettings.setOnClickListener(listener);
-
-        settings_grid = (GridView) root.findViewById(R.id.gridview);
-        MenuSettingsAdapter gridA = new MenuSettingsAdapter(mContext);
-        settings_grid.setAdapter(gridA);
+        ImageView system_s = (ImageView) findViewById(R.id.system_settings);
+        ImageView launcher_S = (ImageView) findViewById(R.id.launcher_settings);
+        system_s.setOnClickListener(listener);
+        launcher_S.setOnClickListener(listener);
         searchBox = (EditText) root.findViewById(R.id.search_box);
         final ListView list = (ListView) root.findViewById(R.id.list);
         list.setOnItemClickListener(new OnItemClickListener() {
@@ -228,7 +227,7 @@ public class LauncherMenu extends RelativeLayout {
         apps.setOnClickListener(listener);
     }
 
-    public LauncherMenu(Context context, AttributeSet attrs) {
+	public LauncherMenu(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
@@ -236,40 +235,44 @@ public class LauncherMenu extends RelativeLayout {
         super(context, attrs, defStyle);
     }
 
-//    @Override
-//    public boolean onTouchEvent(android.view.MotionEvent event) {
-//    	super.onTouchEvent(event);
-//    	return false;
-//    }
+    @Override
+    public boolean onTouchEvent(android.view.MotionEvent event) {
+    	super.onTouchEvent(event);
+    	return false;
+    }
     
 
     public boolean isVisible() {
     	return attatched;
     }
     
+    public int getMenuPage() {
+    	return flipper.getDisplayedChild();
+    }
+    
     @Override
     protected void onAttachedToWindow() {
     	flipper.setDisplayedChild(1);
-    	prefs = PreferenceManager.getDefaultSharedPreferences(mContext);    	
+    	prefs = PreferenceManager.getDefaultSharedPreferences(mContext);    
+        final ImageView shade = (ImageView) mLauncher.findViewById(R.id.shade);
+        shade.setBackgroundColor(PreferencesProvider.Interface.Menu.getMenuColor(mContext));
     	e = prefs.edit();
     	attatched = true;
         tCount = prefs.getInt("_interalCount", 0)+1;
         e.putInt("_interalCount", tCount);
-        e.apply();   
+        e.commit();   
     	setupHotseats();
         setupLivePanels(mContext);
         Animation slideLeftIn = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_left);
         final Animation fadeIn = AnimationUtils.loadAnimation(mContext, R.anim.fade_in_fast);
-        final ImageView shade = (ImageView) mLauncher.findViewById(R.id.shade);
         shade.setLayoutParams(getCustomLayoutParams());
         root.startAnimation(slideLeftIn);	        
 		shade.startAnimation(fadeIn);
 		shade.setVisibility(View.VISIBLE);
 		
-        LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,  
+		LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,  
         		//TODO fix me
 				(int) + (height - getResources().getDimension(R.dimen.button_bar_height) - getSBHeight() - 10));
-        lp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
         dHolder.setLayoutParams(lp2);
 		if (dock.getChildCount() != 0) {
 			AnimateDockTask d = new AnimateDockTask();
@@ -284,14 +287,12 @@ public class LauncherMenu extends RelativeLayout {
 		
 		left.setVisibility(View.GONE);
 		right.setVisibility(View.GONE);
+		mLauncher.mHotseat.setMenuButton(attatched);
 		super.onAttachedToWindow();
     }
     
-    private FrameLayout.LayoutParams getCustomLayoutParams() {
-    	    	
-    	//TODO Fix me
-    	int indicatorHeight = 5;
-    	    	
+    private FrameLayout.LayoutParams getCustomLayoutParams() {    	    	
+    	int indicatorHeight = 5;    	    
     	return new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 
 				(int) + (height - getResources().getDimension(R.dimen.button_bar_height) - getSBHeight() - indicatorHeight));
 	}
@@ -327,66 +328,34 @@ public class LauncherMenu extends RelativeLayout {
     protected void onDetachedFromWindow() {
     	dock.removeAllViews();
     	panelHolder.removeAllViews();
-    	attatched = false;        
-    	super.onDetachedFromWindow();
+    	attatched = false; 
+		mLauncher.mHotseat.setMenuButton(attatched);
+		super.onDetachedFromWindow();
     }  
     
 	private void setupLivePanels(Context context) {                
-    	panels = new ArrayList<String>();
-    	if (!panels.isEmpty()) {
-    		panels.clear();
-    	}
 		panelHolder.removeAllViews();
 		RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		lp.setMargins(0, 25, 0, 0);
-		int count = getPanelCount(context);
-		panel = new Object[count];
-
-		for (int i=0;i<count;i++) {
-			if (panels.get(i).equals("weather")) {
-				panel[i] = new WeatherLivePanel(context);
-				((WeatherLivePanel) panel[i]).setId(WEATHER_PANEL_ID);
-				panelHolder.addView(((WeatherLivePanel) panel[i]), lp);
-				((WeatherLivePanel) panel[i]).setOnClickListener(listener);
-			} else if (panels.get(i).equals("music")) {
-				panel[i] = new MusicControlsLivePanel(context);
-				((MusicControlsLivePanel) panel[i]).setId(MUSIC_PANEL_ID);
-				panelHolder.addView(((MusicControlsLivePanel) panel[i]), lp);
-				((MusicControlsLivePanel) panel[i]).setOnClickListener(listener);
-			} else if (panels.get(i).equals("jeff")) {
-		        e.putInt("_lastJeff", tCount);
-		        e.commit();
-				panel[i] = new TextView(context);
-				((TextView) panel[i]).setText("Hey fuck you man!");
-				((TextView) panel[i]).setTextSize(25);
-				((TextView) panel[i]).setTextColor(getResources().getColor(android.R.color.holo_red_light));
-				((TextView) panel[i]).setGravity(Gravity.CENTER);
-				panelHolder.addView((TextView) panel[i], lp);
-			}
+		lp.setMargins(0, 25, 0, 0);		
+		try {
+			getExternalPlugins();
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-	}
-	
-	private int getPanelCount(Context c) {
-		panels.add("weather");
-	    Calendar calendar = Calendar.getInstance();	    
-    	AudioManager aM = (AudioManager)c.getSystemService(Context.AUDIO_SERVICE);
-		if (aM.isWiredHeadsetOn() || aM.isMusicActive()) {
-			panels.add("music");
-		} 
-		if (calendar.get(Calendar.HOUR) > 10 && calendar.get(Calendar.HOUR) < 20 && showJeff) {
-			if (tCount == 0) {
-				panels.add("jeff");
-			} else {
-				int last = prefs.getInt("_lastJeff", 0);
-				if (last+10 == tCount) {
-					panels.add("jeff");
-				}
-			}
-		}
-		Log.d("LIVEPANEL", "Panel Count Is "+Integer.toString(panels.size()));
-		
-		return panels.size();
 	}
 
 	public void setupHotseats() {
@@ -394,6 +363,7 @@ public class LauncherMenu extends RelativeLayout {
 		DBAdapter db = new DBAdapter(mContext);
 		db.open();
 		c = db.getAllHotseats();
+		
    		hotseat = new DockItemView[c.getCount()];
 		hotseatIntents = new String[c.getCount()];
 		while (c.moveToNext()) {
@@ -417,30 +387,42 @@ public class LauncherMenu extends RelativeLayout {
 		}
 		c.close();
 		db.close();
-		if (dock.getChildCount() < 1) {
-			dock.setVisibility(View.GONE);
-		}
 	}
     
 	OnClickListener listener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			if (v.getId() == R.id.main_search) {
+			Context ctx = v.getContext();
+			switch (v.getId()) {
+			case R.id.main_search:
 				searchBox.setText("");
 				flipTo(2);
-			} else if (v.getId() == R.id.all_apps) {
+				break;
+			case R.id.all_apps:
 				mLauncher.showAllApps(true);
-			} else if (v.getId() == R.id.main_settings) {
-				flipTo(0);
-			} else if (v.getId() == R.id.left) {
+				break;
+			case R.id.main_settings:
+				flipTo(0);				
+				break;
+			case R.id.left:
 				searchBox.setText("");
 				flipTo(flipper.getDisplayedChild()-1);
-			} else if (v.getId() == R.id.right) {
+				break;
+			case R.id.right:
 				flipTo(flipper.getDisplayedChild()+1);
-			} else if (v.getId() == WEATHER_PANEL_ID) {
-				if (!((WeatherLivePanel)panel[0]).mHandler.hasMessages(WeatherLivePanel.QUERY_WEATHER)) {
-					((WeatherLivePanel)panel[0]).mHandler.sendEmptyMessage(WeatherLivePanel.QUERY_WEATHER);
-	            }
+				break;					
+			case R.id.system_settings:
+				Intent i = new Intent();
+			    i.setAction(Intent.ACTION_VIEW);
+			    i.setClassName("com.android.settings", "com.android.settings.Settings");
+			    ctx.startActivity(i);
+			    break;			
+			case R.id.launcher_settings:
+				Intent i2 = new Intent();
+			    i2.setAction(Intent.ACTION_VIEW);
+			    i2.setClassName("com.t3hh4xx0r.haxlauncher", "com.t3hh4xx0r.haxlauncher.preferences.Preferences");
+			    ctx.startActivity(i2);
+			    break;
 			}
 		}
 	};
@@ -491,13 +473,11 @@ public class LauncherMenu extends RelativeLayout {
 			if (where > flipper.getDisplayedChild()) {
 				inFromRight();		
 				left.setVisibility(View.VISIBLE);
-				right.setVisibility(View.GONE);
-				
+				right.setVisibility(View.GONE);	
 			} else {
 				inFromLeft();
 				left.setVisibility(View.GONE);
 				right.setVisibility(View.VISIBLE);
-
 			}
 			
 			if (where == home) {
@@ -564,8 +544,53 @@ public class LauncherMenu extends RelativeLayout {
 		   @Override
 		   public void onProgressUpdate(View... v) {
 			   v[0].startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.slide_in_down));
-			   v[0].setVisibility(View.VISIBLE);			   
+			   v[0].setVisibility(View.VISIBLE);	
 		   }
+	}
+
+	public void getExternalPlugins() throws NameNotFoundException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		String packageName = null;
+		DBAdapter db = new DBAdapter(mContext);
+		db.open();
+		Cursor c = db.getAllPanels();
+		outerLoop:
+		while (c.moveToNext()) {
+			packageName = new String(c.getString(c.getColumnIndex("package")));
+	        Context forgeinContext = mContext.getApplicationContext().createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY); 
+	    	SharedPreferences forgeinPrefs = forgeinContext.getSharedPreferences(packageName+"_plugin_preferences", Context.MODE_WORLD_WRITEABLE);    
+	    
+	    	
+	        String className = packageName+".PanelView";
+	        
+	        String apkName = mLauncher.getPackageManager().getApplicationInfo(
+	                packageName, 0).sourceDir;
+	        PathClassLoader myClassLoader = new dalvik.system.PathClassLoader(
+	                apkName, ClassLoader.getSystemClassLoader());
+	        Class<?> handler = Class.forName(className, true, myClassLoader);
+	        Constructor[] m = handler.getConstructors();
+	        for (int i = 0; i < m.length; i++) {
+	            if (m[i].getName().contains("PanelView")) {
+	            	LivePanel lp = new LivePanel(mContext);
+	            	try {
+	            		View panel = (View)m[i].newInstance(new Object[] {forgeinContext});
+		            	if (!Boolean.parseBoolean(c.getString(c.getColumnIndex("status")))) {
+		            		continue outerLoop;
+		    	    	} else {
+		    	    		if (!forgeinPrefs.getBoolean("shouldShow", true)) {
+			            		continue outerLoop;
+		    	    		}
+		    	    	}
+	            		lp.addView(panel);          
+	            		panelHolder.addView(lp);
+	            	} catch (Exception e) {
+	            		e.printStackTrace();
+	            	}
+	            } 
+	        }					
+		}
+		c.close();
+		db.close();
+        
 	}
 
 }

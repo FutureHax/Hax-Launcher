@@ -22,13 +22,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
 import com.t3hh4xx0r.haxlauncher.Launcher;
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.menu.SearchAdapter;
-import com.t3hh4xx0r.haxlauncher.menu.livepanel.weather.WeatherLivePanel;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -86,7 +83,6 @@ public class LauncherMenuTab extends RelativeLayout {
     static String[] hotseatIntents;
     DockItemView hotseat;
     Cursor c;
-    WeatherLivePanel panel;
     public static final int WEATHER_PANEL_ID = 9999;
     
     private static Animation slideLeftIn;
@@ -275,9 +271,9 @@ public class LauncherMenuTab extends RelativeLayout {
 			} else if (v.getId() == R.id.back) {
 				flipTo(flipper.getDisplayedChild()-1);
 			} else if (v.getId() == WEATHER_PANEL_ID) {
-				if (!panel.mHandler.hasMessages(WeatherLivePanel.QUERY_WEATHER)) {
-	                panel.mHandler.sendEmptyMessage(WeatherLivePanel.QUERY_WEATHER);
-	            }
+//				if (!panel.mHandler.hasMessages(WeatherLivePanel.QUERY_WEATHER)) {
+//	                panel.mHandler.sendEmptyMessage(WeatherLivePanel.QUERY_WEATHER);
+//	            }
 			}
 		}
 	};
@@ -381,11 +377,11 @@ public class LauncherMenuTab extends RelativeLayout {
 		lp.addRule(RelativeLayout.LEFT_OF, R.id.dock_holder);
 		lp.setMargins(0, 0, 0, 85);
 		//TODO:make this more intelligent
-		if (true) {
-			panel = new WeatherLivePanel(context);
-			panel.setId(WEATHER_PANEL_ID);
-			((ViewGroup) v).addView(panel, lp);
-			panel.setOnClickListener(listener);
-		}
+//		if (true) {
+//			panel = new WeatherLivePanel(context);
+//			panel.setId(WEATHER_PANEL_ID);
+//			((ViewGroup) v).addView(panel, lp);
+//			panel.setOnClickListener(listener);
+//		}
 	}
 }

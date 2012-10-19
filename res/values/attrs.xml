@@ -164,4 +164,8 @@
         <attr name="title" format="reference" />
         <attr name="uri" format="string" />
     </declare-styleable>
+    
+    <declare-styleable name="SettingToggleView">
+        <attr name="title_text" format="string" />        
+    </declare-styleable>    
 </resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+     android:title="@string/preferences_interface_homescreen_general_category">
+     
+	<Preference android:key="twitter"
+		android:title="Twitter"
+      	android:summary="Find r2DoesInc on Twitter"/>
+	
+	<Preference android:key="gmail"
+		android:title="gMail"
+      	android:summary="Send gMail to r2DoesInc"/>
+	
+	<Preference android:key="linkedin"
+		android:title="LinkedIn"
+      	android:summary="Find r2DoesInc on LinkedIn"/>		
+                
+ </PreferenceScreen>

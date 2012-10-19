@@ -23,5 +23,4 @@
         android:scrollHorizontally="true"
         android:ellipsize="marquee"        
         android:textAppearance="?android:attr/textAppearanceMedium" />
-    
 </RelativeLayout>

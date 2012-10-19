@@ -23,6 +23,9 @@ public class StyledTextFoo extends TextView{
     }
 
 	private void init(Context c) {
+		if (this.isInEditMode()) {
+			return;
+		}
 	     String otfName = "cabnd.otf";
 	     Typeface font = Typeface.createFromAsset(c.getAssets(), otfName);
 	     this.setTypeface(font);

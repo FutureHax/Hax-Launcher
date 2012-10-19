@@ -28,5 +28,8 @@
         <item>wallpaper_leaf</item>
         <item>wallpaper_noir</item>
         <item>wallpaper_outofthebox</item>
-    </string-array>
+        <item>wallpaper_hax1</item>
+        <item>wallpaper_hax2</item>
+        <item>wallpaper_hax3</item>
+        </string-array>
 </resources>

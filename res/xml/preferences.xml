@@ -15,18 +15,22 @@
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceScreen android:key="about"
+    	android:title="About the developer">
+    </PreferenceScreen> 
+    <PreferenceScreen android:key="panels_details"
+    	android:title="Panel Shitz">
+    </PreferenceScreen>       
     <!-- UI -->
     <PreferenceCategory android:title="@string/preferences_interface_title">
         <!-- Homescreen -->
         <PreferenceScreen android:key="ui_homescreen"
             android:title="@string/preferences_interface_homescreen_title">
-            <PreferenceCategory android:title="@string/preferences_interface_homescreen_general_category">
-                <CheckBoxPreference android:key="ui_homescreen_general_search"
-                    android:title="@string/preferences_interface_homescreen_general_search_title"
-                    android:summary="@string/preferences_interface_homescreen_general_search_summary"
-                    android:defaultValue="true" />
-            </PreferenceCategory>
-        </PreferenceScreen>
+        </PreferenceScreen>   
+        <!-- Menu -->
+        <PreferenceScreen android:key="ui_menu"
+            android:title="@string/preferences_interface_menu_title">
+        </PreferenceScreen> 
 
         <!-- Drawer -->
         <PreferenceScreen android:key="ui_drawer"
@@ -49,5 +53,14 @@
 
     <!-- General -->
     <PreferenceCategory android:title="@string/preferences_general_title">
+        <!-- Push -->
+        <PreferenceScreen android:key="general_push"
+            android:title="@string/preferences_general_push_title">
+        </PreferenceScreen>
+        
+		<!-- Advanced -->
+        <PreferenceScreen android:key="general_advanced"
+            android:title="@string/preferences_general_advanced_title">
+        </PreferenceScreen>	        
     </PreferenceCategory>
 </PreferenceScreen>

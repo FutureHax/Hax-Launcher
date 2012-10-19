@@ -66,7 +66,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -97,22 +96,17 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import com.parse.Parse;
-import com.parse.PushService;
-import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 import android.widget.Toast;
 
 import com.t3hh4xx0r.haxlauncher.DropTarget.DragObject;
 import com.t3hh4xx0r.haxlauncher.menu.LauncherMenu;
 import com.t3hh4xx0r.haxlauncher.menu.LauncherMenuTab;
-import com.t3hh4xx0r.haxlauncher.menu.DockItemView;
+import com.t3hh4xx0r.haxlauncher.parse.ParseHelper;
 import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
 
 /**
@@ -205,7 +199,7 @@ public final class Launcher extends Activity
 
     private FolderInfo mFolderInfo;
 
-    private Hotseat mHotseat;
+    public Hotseat mHotseat;
     public LauncherMenuTab tabMenu;
     public LauncherMenu phoneMenu;
 
@@ -264,8 +258,6 @@ public final class Launcher extends Activity
        
     // Preferences
     private boolean mShowSearchBar;
-    private boolean mEnablePush;
-    private boolean mPushChannelTest;;
     
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
@@ -305,15 +297,7 @@ public final class Launcher extends Activity
 
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
-        mEnablePush = PreferencesProvider.General.getPushChannels(this)[0];
-        if (mEnablePush && PreferencesProvider.General.getPushChannels(this)[1]) {
-        	mPushChannelTest = true;
-        } else {
-        	mPushChannelTest = false;
-        }
-        if (mEnablePush) {
-        	registerPush();
-        }
+        ParseHelper.registerForPush(this);
         
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
@@ -395,13 +379,6 @@ public final class Launcher extends Activity
         int height = displayMetrics.heightPixels / displayMetrics.densityDpi;
 
     	return width;
-	}
-
-	private void registerPush() {
-		PushService.subscribe(this, "", Launcher.class);
-    	if (mPushChannelTest) {
-    		PushService.subscribe(this, "testing", Launcher.class);
-    	}
 	}
 
 	private void getMenu() {
@@ -3385,11 +3362,11 @@ public final class Launcher extends Activity
         // Enable the clings only if they have not been dismissed before
         SharedPreferences prefs =
             getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
-        //if (isClingsEnabled() && !prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
+        if (isClingsEnabled() && !prefs.getBoolean(Cling.WORKSPACE_CLING_DISMISSED_KEY, false)) {
             initCling(R.id.workspace_cling, null, false, 0);
-        //} else {
-        //    removeCling(R.id.workspace_cling);
-        //}
+        } else {
+            removeCling(R.id.workspace_cling);
+        }
     }
     public void showFirstRunAllAppsCling(int[] position) {
         // Enable the clings only if they have not been dismissed before

@@ -19,10 +19,11 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.t3hh4xx0r.haxlauncher">
-
-    <original-package android:name="com.t3hh4xx0r.haxlauncher" />
+    package="com.t3hh4xx0r.haxlauncher"    
+    android:versionCode="1"
+    android:versionName="1.0.0" >
     
+    <original-package android:name="com.t3hh4xx0r.haxlauncher" />
     <uses-sdk android:minSdkVersion="15" />
 
     <permission
@@ -63,7 +64,8 @@
 	<uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     			
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -81,6 +83,8 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     	
     <application
         android:name="com.t3hh4xx0r.haxlauncher.LauncherApplication"
@@ -89,6 +93,7 @@
         android:hardwareAccelerated="@bool/config_hardwareAccelerated"
         android:largeHeap="@bool/config_largeHeap">
         <activity
+			android:screenOrientation="portrait"
             android:name="com.t3hh4xx0r.haxlauncher.Launcher"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
@@ -117,11 +122,15 @@
             <meta-data android:name="android.wallpaper.preview"
                 android:resource="@xml/wallpaper_picker_preview" />
         </activity>
-
-        	
         <activity android:name="com.t3hh4xx0r.haxlauncher.preferences.Preferences"
             android:label="@string/preferences_title" />
-        
+        <activity android:name="com.t3hh4xx0r.haxlauncher.preferences.SingleFragmentActivity"
+            android:label="@string/preferences_title" />        
+		<activity android:name=".menu.livepanel.PanelMenuActivity"
+            android:label="@string/preferences_title" />        
+		<activity android:name=".menu.livepanel.PanelDetails"
+            android:label="@string/preferences_title" />                    
+            
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.t3hh4xx0r.haxlauncher.InstallShortcutReceiver"
@@ -145,7 +154,18 @@
 		    <action android:name="android.intent.action.BOOT_COMPLETED" />
 		    <action android:name="android.intent.action.USER_PRESENT" />
 		  </intent-filter>
-		</receiver>        
+		</receiver>     
+		
+	<receiver android:name="com.t3hh4xx0r.haxlauncher.parse.UpdateReceiver">
+	  <intent-filter>
+	    <action android:name="com.t3hh4xx0r.haxlauncher.UPDATE" />
+	  </intent-filter>
+	</receiver>	
+	<receiver android:name=".menu.livepanel.PanelReceiver">
+	  <intent-filter>
+	    <action android:name="com.t3hh4xx0r.haxlauncher.PANEL_REGISTER" />
+	  </intent-filter>
+	</receiver>		
 
 		<service android:name="com.parse.PushService" />
 				

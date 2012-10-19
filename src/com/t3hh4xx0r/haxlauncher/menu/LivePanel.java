@@ -28,7 +28,8 @@ public class LivePanel extends RelativeLayout {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 	    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	    int width = displayMetrics.widthPixels;
-	    setMeasuredDimension((width/3)*2, 150);
+//	    setMeasuredDimension(150, 150);
+//	    setMeasuredDimension((width/3)*2, 150);
 	}
 	
 }

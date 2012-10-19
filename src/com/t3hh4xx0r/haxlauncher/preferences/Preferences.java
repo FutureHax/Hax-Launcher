@@ -16,25 +16,19 @@
 
 package com.t3hh4xx0r.haxlauncher.preferences;
 
-import com.t3hh4xx0r.haxlauncher.R;
-
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+
+import com.t3hh4xx0r.haxlauncher.R;
 public class Preferences extends PreferenceActivity {
 
-    private static final String TAG = "Launcher.Preferences";
-
+    SharedPreferences prefs;
+    Editor e;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
-
-        SharedPreferences prefs =
-            getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(PreferencesProvider.PREFERENCES_CHANGED, true);
-                editor.commit();
+        setContentView(R.layout.fragment_header);
     }
 }
