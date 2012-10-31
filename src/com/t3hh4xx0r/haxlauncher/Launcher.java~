@@ -143,6 +143,11 @@ public final class Launcher extends Activity
     static final int DIALOG_CREATE_SHORTCUT = 1;
     static final int DIALOG_RENAME_FOLDER = 2;
 
+<<<<<<< HEAD:src/com/t3hh4xx0r/haxlauncher/Launcher.java
+=======
+    MenuPopDown menu;
+    PendingAddArguments randomArgs = new PendingAddArguments();
+>>>>>>> 6baaf82... RandomArgs FTMFW. Fixes the issue with configurable widgets not adding.:src/com/mycolorscreen/canvas/Launcher.java
     private static final String PREFERENCES = "launcher.preferences";
 
     // Type: int
@@ -279,8 +284,6 @@ public final class Launcher extends Activity
         int cellY;
     }
 
-    PendingAddArguments randomArgs = new PendingAddArguments();
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -551,13 +554,13 @@ public final class Launcher extends Activity
     protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
         boolean delayExitSpringLoadedMode = false;
         mWaitingForResult = false;
-
         // The pattern used here is that a user PICKs a specific application,
         // which, depending on the target, might need to CREATE the actual target.
 
         // For example, the user would PICK_SHORTCUT for "Music playlist", and we
         // launch over to the Music app to actually CREATE_SHORTCUT.
         if (resultCode == RESULT_OK && mPendingAddInfo.container != ItemInfo.NO_ID) {
+
             final PendingAddArguments args = new PendingAddArguments();
             if (mPendingAddInfo.screen != -1) {
             	randomArgs = args;
@@ -585,10 +588,10 @@ public final class Launcher extends Activity
                 }
             }
         } else if ((requestCode == REQUEST_PICK_APPWIDGET ||
-        	requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_OK) {
-            //RandomArgs FTMFW
+                requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_OK) {
+        	//RandomArgs FTMFW
             int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-            completeAddAppWidget(appWidgetId, randomArgs.container, randomArgs.screen);  
+            completeAddAppWidget(appWidgetId, randomArgs.container, randomArgs.screen);           
         }
 
         // Exit spring loaded mode if necessary after cancelling the configuration of a widget
@@ -1197,23 +1200,6 @@ public final class Launcher extends Activity
 
     void closeSystemDialogs() {
         getWindow().closeAllPanels();
-
-        /**
-         * We should remove this code when we remove all the dialog code.
-        try {
-            dismissDialog(DIALOG_CREATE_SHORTCUT);
-            // Unlock the workspace if the dialog was showing
-        } catch (Exception e) {
-            // An exception is thrown if the dialog is not visible, which is fine
-        }
-
-        try {
-            dismissDialog(DIALOG_RENAME_FOLDER);
-            // Unlock the workspace if the dialog was showing
-        } catch (Exception e) {
-            // An exception is thrown if the dialog is not visible, which is fine
-        }
-         */
 
         // Whatever we were doing is hereby canceled.
         mWaitingForResult = false;
