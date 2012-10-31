@@ -1367,6 +1367,7 @@ public final class Launcher extends Activity
             // TODO: Fix this comment and the one below.
            appSearchData.putString("source", "launcher-search");
         }
+       
         Rect sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
 
         final SearchManager searchManager =

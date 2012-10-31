@@ -298,21 +298,23 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             final ShortcutInfo srcInfo, final View srcView, Rect dstRect,
             float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
-        Drawable animateDrawable = ((StyledTextFoo) destView).getCompoundDrawables()[1];
-        computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
-
-        // This will animate the dragView (srcView) into the new folder
-        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable);
-
-        // This will animate the first item from it's position as an icon into its
-        // position as the first item in the preview
-        animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION);
-
-        postDelayed(new Runnable() {
-            public void run() {
-                addItem(destInfo);
-            }
-        }, INITIAL_ITEM_ANIMATION_DURATION);
+    	if (destView instanceof StyledTextFoo) {
+    		Drawable animateDrawable = ((StyledTextFoo) destView).getCompoundDrawables()[1];
+	        computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
+	
+	        // This will animate the dragView (srcView) into the new folder
+	        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable);
+	
+	        // This will animate the first item from it's position as an icon into its
+	        // position as the first item in the preview
+	        animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION);
+	
+	        postDelayed(new Runnable() {
+	            public void run() {
+	                addItem(destInfo);
+	            }
+	        }, INITIAL_ITEM_ANIMATION_DURATION);
+    	}
     }
 
     public void onDragExit(Object dragInfo) {

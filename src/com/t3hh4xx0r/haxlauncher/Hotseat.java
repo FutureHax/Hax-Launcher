@@ -93,10 +93,13 @@ public class Hotseat extends FrameLayout {
     public void setup(Launcher launcher) {
         mLauncher = launcher;
         setOnKeyListener(new HotseatIconKeyEventListener());
-        setMenuButton(mLauncher.phoneMenu.isVisible());
-        setupRecents();
+        if (mLauncher != null &&
+        		mLauncher.phoneMenu != null) {
+        	setMenuButton(mLauncher.phoneMenu.isVisible()); 	       	
+        	setupRecents();
+        }
     }
-
+    
     CellLayout getLayout() {
         return mContent;
     }
@@ -228,7 +231,12 @@ public class Hotseat extends FrameLayout {
 					              	return handled;
 					         	case MotionEvent.ACTION_MOVE:
 					            	ActivityManager am = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
-					         		v.getParent().requestDisallowInterceptTouchEvent(true);
+					            	try {
+					            		v.getParent().requestDisallowInterceptTouchEvent(true);
+					            	} catch (NullPointerException e) {
+					            		e.printStackTrace();
+					            		//No parent?
+					            	}
 					              	double diffYM = ((int) event.getY()) - mStartPoint.y;
 					              	double height = v.getHeight();
 					                v.scrollTo(0, (int) -diffYM);
