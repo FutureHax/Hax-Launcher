@@ -187,7 +187,8 @@ public class LauncherMenu extends RelativeLayout {
 				 }
 			}
         });
-        final String lv_arr[]= getSearchableItems(mContext);
+        //final String lv_arr[]= getSearchableItems(mContext);
+        final String lv_arr[] = {"a", "b"};
         final ArrayList<String> arr_sort= new ArrayList<String>();
         final SearchAdapter a = new SearchAdapter(mContext, arr_sort, (Activity) mContext);
         list.setAdapter(a);

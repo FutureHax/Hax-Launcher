@@ -2,24 +2,25 @@ package com.t3hh4xx0r.haxlauncher.preferences;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.t3hh4xx0r.haxlauncher.FakeHome;
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.menu.livepanel.PanelMenuActivity;
 
 public class PreferencesFragment extends PreferenceFragment {
 	
 	 private static final String TAG = "Launcher.Preferences";
-	    Preference folderBg;
-	    Preference folderExpandedBg;
 	    SharedPreferences sharedPrefs;
 	    SharedPreferences.Editor editor;
 	    
@@ -48,6 +49,11 @@ public class PreferencesFragment extends PreferenceFragment {
 	        }else{
 	        	((ListView)getView().findViewById(android.R.id.list)).setChoiceMode(ListView.CHOICE_MODE_NONE);
 	        }
+	        
+	        Preference p = getPreferenceScreen().findPreference("default");
+			Intent home = new Intent("android.intent.action.MAIN");
+	        home.addCategory("android.intent.category.HOME");
+	        p.setSummary("Currently - " + getPrefered(home));
 
 		}
 		
@@ -162,10 +168,32 @@ public class PreferencesFragment extends PreferenceFragment {
 			if(key.equals("about")){
 				showDetails(DetailsFragmentManager.ABOUT);
 			}
+			if(key.equals("default")){
+				PackageManager pm = this.getActivity().getPackageManager();
+				makePrefered();
+			}
 			if(key.equals("panels_details")){
 				Intent i = new Intent(this.getActivity(), PanelMenuActivity.class);
 				startActivity(i);
 			}
 		    return false;
 		}
+	   
+	   private void makePrefered() {
+		   PackageManager p = this.getActivity().getPackageManager();
+		   ComponentName cN = new ComponentName(this.getActivity(), FakeHome.class);
+		   p.setComponentEnabledSetting(cN, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+		   
+		   Intent selector = new Intent(Intent.ACTION_MAIN);
+           selector.addCategory(Intent.CATEGORY_HOME);            
+           startActivity(selector);
+           
+		   p.setComponentEnabledSetting(cN, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+       }
+	   
+	   private String getPrefered(Intent i) {
+           PackageManager pm = this.getActivity().getPackageManager();
+		   final ResolveInfo mInfo = pm.resolveActivity(i, 0);
+		   return (String) pm.getApplicationLabel(mInfo.activityInfo.applicationInfo);
+	   }
 }
