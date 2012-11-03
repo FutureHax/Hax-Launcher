@@ -25,7 +25,11 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RecentTaskInfo;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -35,6 +39,7 @@ import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -42,6 +47,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.t3hh4xx0r.haxlauncher.menu.LauncherMenu;
 import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
@@ -91,13 +97,51 @@ public class Hotseat extends FrameLayout {
     }
 
     public void setup(Launcher launcher) {
-        mLauncher = launcher;
-        setOnKeyListener(new HotseatIconKeyEventListener());
-        setMenuButton(mLauncher.phoneMenu.isVisible());
-        setupRecents();
+    	boolean userIsFuckedUp = false;
+    	DisplayMetrics metrics = new DisplayMetrics();
+    	launcher.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    	switch(metrics.densityDpi){    	     
+    	     case DisplayMetrics.DENSITY_HIGH:
+    	         break;
+    	     case DisplayMetrics.DENSITY_XHIGH:
+    	    	 break;
+    	     default:
+    	    	 userIsFuckedUp = true;
+    	    	 break;
+    	}
+    	
+    	if (!userIsFuckedUp) {
+    		mLauncher = launcher;
+    		setOnKeyListener(new HotseatIconKeyEventListener());
+    		setMenuButton(mLauncher.phoneMenu.isVisible());
+    		setupRecents();
+    	} else {
+    		tellUserTheySuck((Context) launcher);
+    	}
     }
 
-    CellLayout getLayout() {
+    private void tellUserTheySuck(Context c) {
+    	final AlertDialog.Builder builder = new AlertDialog.Builder(c);
+    	builder.setTitle("Something fishy goin' on here!");
+    	builder.setMessage("You have been messing with the dpi settings, or you sideloaded this app onto an unsupported device.\n" +
+    			"We for whatever reason, do not support your current device/configuration. Hax Launcher will NOT function for you.\n\nWould you like to select a new default launcher?");
+    	builder.setIcon(android.R.drawable.ic_dialog_alert);
+    	builder.setPositiveButton("Yes", new android.content.DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			
+			}
+    	});
+    	builder.setNegativeButton("No", new android.content.DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {				
+				dialog.cancel();
+			}
+    	});
+    	builder.show();		
+	}
+
+	CellLayout getLayout() {
         return mContent;
     }
     
@@ -358,6 +402,10 @@ public class Hotseat extends FrameLayout {
 	        	} catch (NullPointerException npe) {
 	        		updated = true;
 	        		npe.printStackTrace();
+	        		break;
+	        	} catch (IndexOutOfBoundsException ioobe) {
+	        		updated = true;
+	        		ioobe.printStackTrace();
 	        		break;
 	        	}
 	        }       
