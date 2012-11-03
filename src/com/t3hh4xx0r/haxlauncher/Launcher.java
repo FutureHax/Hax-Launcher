@@ -279,6 +279,8 @@ public final class Launcher extends Activity
         int cellY;
     }
 
+    PendingAddArguments randomArgs = new PendingAddArguments();
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -557,6 +559,9 @@ public final class Launcher extends Activity
         // launch over to the Music app to actually CREATE_SHORTCUT.
         if (resultCode == RESULT_OK && mPendingAddInfo.container != ItemInfo.NO_ID) {
             final PendingAddArguments args = new PendingAddArguments();
+            if (mPendingAddInfo.screen != -1) {
+            	randomArgs = args;
+            }
             args.requestCode = requestCode;
             args.intent = data;
             args.container = mPendingAddInfo.container;
@@ -579,6 +584,11 @@ public final class Launcher extends Activity
                     mAppWidgetHost.deleteAppWidgetId(appWidgetId);
                 }
             }
+        } else if ((requestCode == REQUEST_PICK_APPWIDGET ||
+        	requestCode == REQUEST_CREATE_APPWIDGET) && resultCode == RESULT_OK) {
+            //RandomArgs FTMFW
+            int appWidgetId = data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+            completeAddAppWidget(appWidgetId, randomArgs.container, randomArgs.screen);  
         }
 
         // Exit spring loaded mode if necessary after cancelling the configuration of a widget
@@ -1367,6 +1377,7 @@ public final class Launcher extends Activity
             // TODO: Fix this comment and the one below.
            appSearchData.putString("source", "launcher-search");
         }
+       
         Rect sourceBounds = mSearchDropTargetBar.getSearchBarBounds();
 
         final SearchManager searchManager =

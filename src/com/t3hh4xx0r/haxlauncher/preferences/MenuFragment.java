@@ -10,7 +10,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.preference.TwoStatePreference;
 
 import com.t3hh4xx0r.haxlauncher.R;
 
@@ -47,8 +46,8 @@ public class MenuFragment extends PreferenceFragment implements OnPreferenceChan
 			}
 	   }
 
-	@Override
-	public boolean onPreferenceChange(Preference preference, Object newValue) {
+	   @Override
+	   public boolean onPreferenceChange(Preference preference, Object newValue) {
 		String key = preference.getKey();
 		if (key.equals(SHADE_COLOR)) {
 			preference.setSummary(ColorPickerPreference.convertToARGB(Integer.valueOf(String.valueOf(newValue))));
