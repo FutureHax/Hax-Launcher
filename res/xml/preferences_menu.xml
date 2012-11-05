@@ -5,7 +5,7 @@
 	<net.margaritov.preference.colorpicker.ColorPickerPreference
 	    android:key="com.t3hh4xx0r.haxlauncher.ui_menu_shadeColor"
 	    android:title="@string/preferences_interface_menu_shade_color_title"
-	    android:defaultValue="#4D4D4D"     
+	    android:defaultValue="-1744830464"     
 	    alphaSlider="true"                              
 	/>
 	

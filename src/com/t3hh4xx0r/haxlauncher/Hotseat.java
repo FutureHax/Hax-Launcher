@@ -50,6 +50,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.t3hh4xx0r.haxlauncher.menu.LauncherMenu;
+import com.t3hh4xx0r.haxlauncher.preferences.PreferencesFragment;
 import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
 
 public class Hotseat extends FrameLayout {
@@ -110,8 +111,8 @@ public class Hotseat extends FrameLayout {
     	    	 break;
     	}
     	
-	if (mLauncher != null &&
-        		mLauncher.phoneMenu != null) {
+	if (launcher != null &&
+			launcher.phoneMenu != null) {
         	if (!userIsFuckedUp) {
 	    		mLauncher = launcher;
 	    		setOnKeyListener(new HotseatIconKeyEventListener());
@@ -124,7 +125,7 @@ public class Hotseat extends FrameLayout {
     	
     }
 
-    private void tellUserTheySuck(Context c) {
+    private void tellUserTheySuck(final Context c) {
     	final AlertDialog.Builder builder = new AlertDialog.Builder(c);
     	builder.setTitle("Something fishy goin' on here!");
     	builder.setMessage("You have been messing with the dpi settings, or you sideloaded this app onto an unsupported device.\n" +
@@ -133,7 +134,7 @@ public class Hotseat extends FrameLayout {
     	builder.setPositiveButton("Yes", new android.content.DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-			
+				PreferencesFragment.makePrefered(c);
 			}
     	});
     	builder.setNegativeButton("No", new android.content.DialogInterface.OnClickListener() {
@@ -280,7 +281,6 @@ public class Hotseat extends FrameLayout {
 					            	try {
 					            		v.getParent().requestDisallowInterceptTouchEvent(true);
 					            	} catch (NullPointerException e) {
-					            		e.printStackTrace();
 					            		//No parent?
 					            	}
 					              	double diffYM = ((int) event.getY()) - mStartPoint.y;
@@ -382,7 +382,6 @@ public class Hotseat extends FrameLayout {
 		        			} 
 		        		}
 		        	} catch (NullPointerException npe) {
-		        		npe.printStackTrace();
 		        		updated = true;
 		        		break;
 		        	}
@@ -411,11 +410,9 @@ public class Hotseat extends FrameLayout {
 	        		}
 	        	} catch (NullPointerException npe) {
 	        		updated = true;
-	        		npe.printStackTrace();
 	        		break;
 	        	} catch (IndexOutOfBoundsException ioobe) {
 	        		updated = true;
-	        		ioobe.printStackTrace();
 	        		break;
 	        	}
 	        }       

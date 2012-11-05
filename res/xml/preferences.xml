@@ -19,7 +19,7 @@
     	android:title="Set Default Launcher Application">
     </PreferenceScreen> 
     <PreferenceScreen android:key="panels_details"
-    	android:title="Panel Shitz">
+    	android:title="Live Panels">
     </PreferenceScreen>       
     <!-- UI -->
     <PreferenceCategory android:title="@string/preferences_interface_title">

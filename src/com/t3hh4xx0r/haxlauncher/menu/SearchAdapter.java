@@ -4,10 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.t3hh4xx0r.haxlauncher.R;
-
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -15,16 +12,20 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.util.Log;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 public class SearchAdapter extends BaseAdapter {
@@ -36,13 +37,15 @@ public class SearchAdapter extends BaseAdapter {
 	 ImageView icon;
 	 Object tmpIcon;
 	 Activity activity;
+	 EditText box;
 	 
-	 public SearchAdapter(Context context, ArrayList<String> list, Activity act) {
+	 public SearchAdapter(Context context, ArrayList<String> list, Activity act, EditText searchBox) {
 	  pm = context.getPackageManager();
 	  selectionList = list;
 	  mInflater = LayoutInflater.from(context);
 	  ctx = context;	  
 	  activity = act;
+	  box = searchBox;
 	 }
 
 	public int getCount() {
@@ -68,13 +71,24 @@ public class SearchAdapter extends BaseAdapter {
 		  holder = (ViewHolder) convertView.getTag();
 	  }
   
-	  holder.title.setText(selectionList.get(position));
+	  boldenText(holder.title, selectionList.get(position), box.getText().toString());
 //	  if (selectionList.size() == 1) {
 //		  setIcon(holder.icon, selectionList.get(position));
 //	  }
 	  return convertView;
 	 }
 
+	private void boldenText(StyledTextFoo v, String result, String query) {
+		if (query.length() !=0) {
+			int start = result.toLowerCase().indexOf(query.toLowerCase());
+			int end = start + query.length();
+			final StyleSpan biss = new StyleSpan(android.graphics.Typeface.BOLD_ITALIC); 
+			SpannableString span = new SpannableString(result);
+			span.setSpan(biss, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+			v.setText(span);
+		}
+	}
+		
 	 private void setIcon(final ImageView holder, final String name ) {
 		Thread thread = new Thread() {
 	    @Override

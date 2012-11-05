@@ -3,6 +3,7 @@ package com.t3hh4xx0r.haxlauncher.preferences;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -170,7 +171,7 @@ public class PreferencesFragment extends PreferenceFragment {
 			}
 			if(key.equals("default")){
 				PackageManager pm = this.getActivity().getPackageManager();
-				makePrefered();
+				makePrefered(this.getActivity());
 			}
 			if(key.equals("panels_details")){
 				Intent i = new Intent(this.getActivity(), PanelMenuActivity.class);
@@ -179,14 +180,14 @@ public class PreferencesFragment extends PreferenceFragment {
 		    return false;
 		}
 	   
-	   private void makePrefered() {
-		   PackageManager p = this.getActivity().getPackageManager();
-		   ComponentName cN = new ComponentName(this.getActivity(), FakeHome.class);
+	   public static void makePrefered(Context c) {
+		   PackageManager p = c.getPackageManager();
+		   ComponentName cN = new ComponentName(c, FakeHome.class);
 		   p.setComponentEnabledSetting(cN, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
 		   
 		   Intent selector = new Intent(Intent.ACTION_MAIN);
            selector.addCategory(Intent.CATEGORY_HOME);            
-           startActivity(selector);
+           c.startActivity(selector);
            
 		   p.setComponentEnabledSetting(cN, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
        }

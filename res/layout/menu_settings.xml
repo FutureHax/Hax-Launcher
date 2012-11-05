@@ -7,12 +7,12 @@
 
     <ImageView
         android:id="@+id/system_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:scaleType="fitStart"
+        android:scaleType="fitXY"
         android:src="@drawable/system_text" />
 
     <HorizontalScrollView
@@ -61,12 +61,12 @@
 
     <ImageView
         android:id="@+id/launcher_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:scaleType="fitStart"
+        android:scaleType="fitXY"
         android:src="@drawable/launcher_text" />
 
     <LinearLayout

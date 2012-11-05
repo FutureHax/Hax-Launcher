@@ -18,6 +18,10 @@ public class DBAdapter {
     private static final String CREATE_HOTSEATS =
             "create table hotseats (_id integer primary key autoincrement, "
             + "name text not null, icon blob not null, intent text not null);";
+    
+    private static final String CREATE_SEARCHABLES =
+            "create table searchables (_id integer primary key autoincrement, "
+            + "text text not null, package text, unique(text) on conflict ignore);";
 
     private static final String CREATE_PANELS =
             "create table panels (_id integer primary key autoincrement, "
@@ -34,13 +38,14 @@ public class DBAdapter {
         
     private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
-            super(context, "launcher_shitz.db", null, 1);
+            super(context, "hax_launcher.db", null, 4);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
         	db.execSQL(CREATE_HOTSEATS);
         	db.execSQL(CREATE_PANELS);
+        	db.execSQL(CREATE_SEARCHABLES);
         }
 
         @Override
@@ -48,6 +53,7 @@ public class DBAdapter {
         int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS hotseats");
             db.execSQL("DROP TABLE IF EXISTS panels");
+            db.execSQL("DROP TABLE IF EXISTS searchables");
             onCreate(db);
         }
     }    
@@ -132,4 +138,44 @@ public class DBAdapter {
         return db.delete("panels", "package" + 
         		"= ?", new String[] {i}) > 0;        		
     }    
+    
+    public long insertSearchble(String text, String pname) {
+    	ContentValues values = new ContentValues();
+    	values.put("text", text);
+    	if (pname != null) {
+    		values.put("package", pname);
+    	}
+        return db.insert("searchables", null, values);      		
+    } 
+    
+    public Cursor getAllSearchables() {
+    	Cursor mCursor = db.query("searchables", new String[] {
+        		"package", 
+        		"text"}, 
+                null, 
+                null, 
+                null, 
+                null, 
+                null);	
+		return mCursor;
+    } 
+    
+    public long removeSearchablePackage(String p) {
+        return db.delete("searchables", "package" + 
+        		"= ?", new String[] {p});        		
+    } 
+    
+    public long removeSearchableContact(String d) {
+        return db.delete("searchables", "text" + 
+        		"= ?", new String[] {d});        		
+    } 
+    
+	public int updateSearchablePackage(String p, String d) {
+		ContentValues args = new ContentValues();
+	    args.put("text", d);
+	    if (p != null) {
+	    	args.put("package", p);
+	    }
+	    return this.db.update("searchables", args, ("package = ?"), new String[] {p});
+	}
 }

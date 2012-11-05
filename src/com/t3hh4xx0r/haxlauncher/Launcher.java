@@ -309,6 +309,7 @@ public final class Launcher extends Activity
         checkForLocaleChange();
         setContentView(R.layout.launcher);
         setupViews();
+        dealWithSearchables();
         showFirstRunWorkspaceCling();
 
         registerContentObservers();
@@ -372,13 +373,21 @@ public final class Launcher extends Activity
         }
     }
 
-    private int getSize() {
+    private void dealWithSearchables() {
+    	DBAdapter db = new DBAdapter(this);
+    	db.open();
+    	if (db.getAllSearchables().getCount() == 0) {
+    		LauncherMenu.setSearchableItems(this, new boolean[]{true, true});
+    	}
+	}
+
+	private int getSize() {
         Display display = this.getWindowManager().getDefaultDisplay();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         display.getMetrics(displayMetrics);
 
         int width = displayMetrics.widthPixels / displayMetrics.densityDpi;
-        int height = displayMetrics.heightPixels / displayMetrics.densityDpi;
+       // int height = displayMetrics.heightPixels / displayMetrics.densityDpi;
 
     	return width;
 	}

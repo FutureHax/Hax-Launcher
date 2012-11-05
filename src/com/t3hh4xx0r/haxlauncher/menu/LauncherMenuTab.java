@@ -22,11 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
-import com.t3hh4xx0r.haxlauncher.DBAdapter;
-import com.t3hh4xx0r.haxlauncher.Launcher;
-import com.t3hh4xx0r.haxlauncher.R;
-import com.t3hh4xx0r.haxlauncher.menu.SearchAdapter;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,37 +32,30 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Point;
 import android.net.Uri;
-import android.os.Handler;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.t3hh4xx0r.haxlauncher.DBAdapter;
+import com.t3hh4xx0r.haxlauncher.Launcher;
+import com.t3hh4xx0r.haxlauncher.R;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 public class LauncherMenuTab extends RelativeLayout {
 
@@ -140,7 +128,7 @@ public class LauncherMenuTab extends RelativeLayout {
         });
         final String lv_arr[]= getSearchableItems(mContext);
         final ArrayList<String> arr_sort= new ArrayList<String>();
-        final SearchAdapter a = new SearchAdapter(mContext, arr_sort, (Activity) mContext);
+        final SearchAdapter a = new SearchAdapter(mContext, arr_sort, (Activity) mContext, null);
         list.setAdapter(a);
         searchBox.addTextChangedListener(new TextWatcher() {
         	public void afterTextChanged(Editable s) {

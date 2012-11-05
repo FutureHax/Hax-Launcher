@@ -25,7 +25,6 @@
     
     <original-package android:name="com.t3hh4xx0r.haxlauncher" />
     <uses-sdk android:minSdkVersion="15" />
-    <uses-sdk android:minSdkVersion="15" />
     
     <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
@@ -170,9 +169,18 @@
 	<receiver android:name=".menu.livepanel.PanelReceiver">
 	  <intent-filter>
 	    <action android:name="com.t3hh4xx0r.haxlauncher.PANEL_REGISTER" />
+	    <action android:name="com.t3hh4xx0r.haxlauncher.PANEL_UPDATE" />
 	  </intent-filter>
 	</receiver>		
-
+	<receiver android:name=".menu.SearchListItemListener">
+	    <intent-filter>
+			<action android:name="android.intent.action.PACKAGE_ADDED"/>
+			<action android:name="android.intent.action.PACKAGE_REPLACED"/>
+			<action android:name="android.intent.action.PACKAGE_REMOVED"/>
+			<data android:scheme="package"/>
+	    </intent-filter>
+	</receiver>
+		
 		<service android:name="com.parse.PushService" />
 				
         <!-- The settings provider contains Home's data, like the workspace favorites -->

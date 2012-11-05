@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -15,41 +14,49 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
 
 public class PanelReceiver extends BroadcastReceiver {
 	private static final String PANEL_REQUEST = "com.t3hh4xx0r.haxlauncher.PANEL_REQUEST";
 	private static final String PANEL_REGISTER = "com.t3hh4xx0r.haxlauncher.PANEL_REGISTER";
+	private static final String PANEL_UPDATE = "com.t3hh4xx0r.haxlauncher.PANEL_UPDATE";
+	
 	boolean shouldAdd = true;
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Bundle b = intent.getExtras();
-		String author = b.getString("author_name");
-		String plugin = b.getString("plugin_name");
-		String packageN = b.getString("package_name");
-		String desc = b.getString("description");
-		String version = b.getString("version");
-		    			
-		DBAdapter db = new DBAdapter(context);
-		db.open();		
-		Cursor c = db.getAllPanels();
-		if (c.getCount() != 0) {
-			while (c.moveToNext()) {
-				if (c.getString(c.getColumnIndex("author")).equals(author) &&
-						c.getString(c.getColumnIndex("package")).equals(packageN)){
-					shouldAdd = false;
-					if (!c.getString(c.getColumnIndex("version")).equals(version)) {
-						db.removePanel(packageN);
-						shouldAdd = true;
-					}				
+		String a = intent.getAction();
+		if (a.equals(PANEL_REGISTER)) {
+			Bundle b = intent.getExtras();
+			String author = b.getString("author_name");
+			String plugin = b.getString("plugin_name");
+			String packageN = b.getString("package_name");
+			String desc = b.getString("description");
+			String version = b.getString("version");
+			    			
+			DBAdapter db = new DBAdapter(context);
+			db.open();		
+			Cursor c = db.getAllPanels();
+			if (c.getCount() != 0) {
+				while (c.moveToNext()) {
+					if (c.getString(c.getColumnIndex("author")).equals(author) &&
+							c.getString(c.getColumnIndex("package")).equals(packageN)){
+						shouldAdd = false;
+						if (!c.getString(c.getColumnIndex("version")).equals(version)) {
+							db.removePanel(packageN);
+							shouldAdd = true;
+						}				
+					}
 				}
 			}
+			if (shouldAdd) {			
+				db.insertPanel(version, author, plugin, packageN, desc, image("ic_launcher", context, packageN), image("screencap", context, packageN));
+			}
+			db.close();		
+		} else if (a.equals(PANEL_UPDATE)) {
+			Log.d("UPDATE", "OMFG!");
 		}
-		if (shouldAdd) {			
-			db.insertPanel(version, author, plugin, packageN, desc, image("ic_launcher", context, packageN), image("screencap", context, packageN));
-		}
-		db.close();		
 	}
 	
 	public static void requestPanels(Context context) {
