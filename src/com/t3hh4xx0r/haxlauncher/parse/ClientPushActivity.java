@@ -1,8 +1,16 @@
 package com.t3hh4xx0r.haxlauncher.parse;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +23,9 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -25,6 +36,7 @@ import android.widget.ListView;
 import com.parse.ParsePush;
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
 import com.t3hh4xx0r.haxlauncher.R;
+import com.t3hh4xx0r.haxlauncher.parse.PushLogin.Encryption;
 
 public class ClientPushActivity extends Activity {
 	ListView lv1;
@@ -142,4 +154,49 @@ public class ClientPushActivity extends Activity {
 	    }
 	    super.onActivityResult(aRequestCode, aResultCode, aData);
 	}
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuinflate = new MenuInflater(this);
+		menuinflate.inflate(R.menu.vip_chat_menu, menu);
+		if (!PushLogin.PrivatePushPreferencesProvider.getClientId(getApplicationContext()).equals("r2doesinc")){
+			menu.removeItem(R.id.test);
+		} 
+		return true;
+	}	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    if (item.getItemId() == R.id.sign_out) {
+	        PushLogin.PrivatePushPreferencesProvider.setHasClientPush(this, false);
+	        PushLogin.PrivatePushPreferencesProvider.setClientId(this, "(some unknown douche)");
+	        finish();
+            return true;
+	    } else if (item.getItemId() == R.id.test) {
+	    	try {
+				Log.d("TEST PASSWORD", PushLogin.Encryption.encrypt(input.getText().toString(), Encryption.KEY).trim());
+			} catch (InvalidKeyException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchPaddingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidAlgorithmParameterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalBlockSizeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (BadPaddingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
+		return false;
+	}	
 }
