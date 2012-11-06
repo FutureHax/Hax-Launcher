@@ -107,6 +107,7 @@ import com.t3hh4xx0r.haxlauncher.DropTarget.DragObject;
 import com.t3hh4xx0r.haxlauncher.menu.LauncherMenu;
 import com.t3hh4xx0r.haxlauncher.menu.LauncherMenuTab;
 import com.t3hh4xx0r.haxlauncher.parse.ParseHelper;
+import com.t3hh4xx0r.haxlauncher.preferences.PreferencesFragment;
 import com.t3hh4xx0r.haxlauncher.preferences.PreferencesProvider;
 
 /**
@@ -1601,12 +1602,28 @@ public final class Launcher extends Activity
             mPendingAddInfo.cellX = cell[0];
             mPendingAddInfo.cellY = cell[1];
         }
-
-        int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
-        AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
-        addAppWidgetImpl(appWidgetId, info);
+        widgetWarning(this);
+//        int appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+//        AppWidgetManager.getInstance(this).bindAppWidgetId(appWidgetId, info.componentName);
+//        addAppWidgetImpl(appWidgetId, info);
     }
 
+    void widgetWarning(Context c) {
+    	final AlertDialog.Builder builder = new AlertDialog.Builder(c);
+     	builder.setTitle("Opps!");
+     	builder.setMessage("This is currently unsupported, the app needs to be updated to support the new JellyBean Widgets permission system.\n" +
+     			"Please long press the workspace to add widgets.");
+     	builder.setIcon(android.R.drawable.ic_dialog_alert);
+     	builder.setPositiveButton("Gotcha", new android.content.DialogInterface.OnClickListener() {
+ 			@Override
+ 			public void onClick(DialogInterface dialog, int which) {
+ 				dialog.cancel();
+ 	            exitSpringLoadedDragModeDelayed(true, false);
+ 			}
+     	});
+     	builder.show();	
+    }
+    
     void processShortcut(Intent intent) {
         // Handle case where user selected "Applications"
         String applicationName = getResources().getString(R.string.group_applications);

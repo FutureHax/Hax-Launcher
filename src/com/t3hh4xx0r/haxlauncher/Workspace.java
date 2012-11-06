@@ -2594,29 +2594,32 @@ public class Workspace extends SmoothPagedView
                         onDropExternal(new int[] { x, y }, info, layout, false);
                     }
                 } else {
-                    if (widgets.size() == 1) {
-                        // If there is only one item, then go ahead and add and configure
-                        // that widget
-                        final AppWidgetProviderInfo widgetInfo = widgets.get(0).widgetInfo;
-                        final PendingAddWidgetInfo createInfo =
-                                new PendingAddWidgetInfo(widgetInfo, mimeType, data);
-                        mLauncher.addAppWidgetFromDrop(createInfo,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentPage, null, pos);
-                    } else {
-                        // Show the widget picker dialog if there is more than one widget
-                        // that can handle this data type
-                        final InstallWidgetReceiver.WidgetListAdapter adapter =
-                            new InstallWidgetReceiver.WidgetListAdapter(mLauncher, mimeType,
-                                    data, widgets, layout, mCurrentPage, pos);
-                        final AlertDialog.Builder builder =
-                            new AlertDialog.Builder(getContext());
-                        builder.setAdapter(adapter, adapter);
-                        builder.setCancelable(true);
-                        builder.setTitle(getContext().getString(
-                                R.string.external_drop_widget_pick_title));
-                        builder.setIcon(R.drawable.ic_no_applications);
-                        builder.show();
-                    }
+                	mLauncher.widgetWarning(getContext());
+//                    if (widgets.size() == 1) {
+//                        // If there is only one item, then go ahead and add and configure
+//                        // that widget
+//                        final AppWidgetProviderInfo widgetInfo = widgets.get(0).widgetInfo;
+//                        final PendingAddWidgetInfo createInfo =
+//                                new PendingAddWidgetInfo(widgetInfo, mimeType, data);
+//                        mLauncher.addAppWidgetFromDrop(createInfo,
+//                            LauncherSettings.Favorites.CONTAINER_DESKTOP, mCurrentPage, null, pos);
+//                    } else {
+//                        // Show the widget picker dialog if there is more than one widget
+//                        // that can handle this data type
+//                        final InstallWidgetReceiver.WidgetListAdapter adapter =
+//                            new InstallWidgetReceiver.WidgetListAdapter(mLauncher, mimeType,
+//                                    data, widgets, layout, mCurrentPage, pos);
+//                        final AlertDialog.Builder builder =
+//                            new AlertDialog.Builder(getContext());
+//                        builder.setAdapter(adapter, adapter);
+//                        builder.setCancelable(true);
+//                        builder.setTitle(getContext().getString(
+//                                R.string.external_drop_widget_pick_title));
+//                        builder.setIcon(R.drawable.ic_no_applications);
+//                        builder.show();
+//                    }
+                    return false;
+
                 }
             }
             return true;

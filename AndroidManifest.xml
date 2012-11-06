@@ -134,7 +134,12 @@
 		<activity android:name=".menu.livepanel.PanelMenuActivity"
             android:label="@string/preferences_title" />        
 		<activity android:name=".menu.livepanel.PanelDetails"
-            android:label="@string/preferences_title" />                    
+            android:label="@string/preferences_title" />                
+        <activity android:name=".parse.PushLogin"
+            android:label="@string/preferences_title" />
+		<activity android:name=".parse.ClientPushActivity"
+		    android:exported="false"
+            android:label="Welcome to VIP" />                            
             
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
@@ -180,7 +185,11 @@
 			<data android:scheme="package"/>
 	    </intent-filter>
 	</receiver>
-		
+	<receiver android:name=".parse.ChatReceiver">
+	    <intent-filter android:priority="420">	        
+			<action android:name="com.t3hh4xx0r.haxlauncher.ACTION_CHAT_SENT"/>
+	    </intent-filter>
+	</receiver>		
 		<service android:name="com.parse.PushService" />
 				
         <!-- The settings provider contains Home's data, like the workspace favorites -->

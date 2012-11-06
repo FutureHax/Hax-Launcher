@@ -1,12 +1,15 @@
 package com.t3hh4xx0r.haxlauncher;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
+import android.util.Log;
 
 public class DBAdapter {
 
@@ -22,6 +25,10 @@ public class DBAdapter {
     private static final String CREATE_SEARCHABLES =
             "create table searchables (_id integer primary key autoincrement, "
             + "text text not null, package text, unique(text) on conflict ignore);";
+    
+    private static final String CREATE_CHAT =
+            "create table chat (_id integer primary key autoincrement, "
+            + "sender text not null, message text not null, sent_time text not null, unique(sender, message, sent_time) on conflict ignore);";
 
     private static final String CREATE_PANELS =
             "create table panels (_id integer primary key autoincrement, "
@@ -38,7 +45,7 @@ public class DBAdapter {
         
     private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
-            super(context, "hax_launcher.db", null, 4);
+            super(context, "hax_launcher.db", null, 6);
         }
 
         @Override
@@ -46,6 +53,7 @@ public class DBAdapter {
         	db.execSQL(CREATE_HOTSEATS);
         	db.execSQL(CREATE_PANELS);
         	db.execSQL(CREATE_SEARCHABLES);
+        	db.execSQL(CREATE_CHAT);
         }
 
         @Override
@@ -53,6 +61,7 @@ public class DBAdapter {
         int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS hotseats");
             db.execSQL("DROP TABLE IF EXISTS panels");
+            db.execSQL("DROP TABLE IF EXISTS chat");
             db.execSQL("DROP TABLE IF EXISTS searchables");
             onCreate(db);
         }
@@ -178,4 +187,26 @@ public class DBAdapter {
 	    }
 	    return this.db.update("searchables", args, ("package = ?"), new String[] {p});
 	}
+	
+	
+	public void insertChatMessage(String user, String message, String sent_time) {
+		ContentValues values = new ContentValues();
+    	values.put("sender", user);
+    	values.put("message", message);
+    	values.put("sent_time", sent_time);
+        db.insert("chat", null, values);      		
+	}
+	
+	public Cursor getChats() {
+		Cursor mCursor = db.query("chat", new String[] {
+        			"sender", 
+        			"sent_time", 
+	        		"message"}, 
+	                null, 
+	                null, 
+	                null, 
+	                null, 
+	                null);	
+			return mCursor;
+	    } 
 }

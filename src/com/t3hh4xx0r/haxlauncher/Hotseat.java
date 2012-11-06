@@ -300,28 +300,29 @@ public class Hotseat extends FrameLayout {
 						                			if (PreferencesProvider.General.Advanced.getEnableRootProcessKiller(ctx)) {
 						                				String cmds[] = {"echo " + i.pid, "kill -9 " + i.pid};
 						                				try {
+							                				Log.d("KILLING IT ALL FOR REAL"+i.processName, Integer.toString(i.pid));
 															runAsRoot(cmds);
 														} catch (IOException e) {}						                				
 						                			} else {
 						                				Log.d("KILLING PROCESS "+i.processName, Integer.toString(i.pid));
-							                			am.killBackgroundProcesses(getPackageFromTaskList(info)[1]);
-							                			int pid;
-							                			try {
-							                				pid = isServiceRunning(ctx, getPackageFromTaskList(info)[1]);
-							                				if (pid !=420) {
+						                				try {
+								                			am.killBackgroundProcesses(getPackageFromTaskList(info)[1]);
+								                			int pid;
+								                			pid = isServiceRunning(ctx, getPackageFromTaskList(info)[1]);
+							                				if (pid != 420) {
 								                				Log.d("KILLING SERVICE", serviceClassName(ctx, getPackageFromTaskList(info)[1]));
 									                			Intent service = new Intent(serviceClassName(ctx, getPackageFromTaskList(info)[1]));
 									                			ctx.stopService(service);
 							                				}
 							                			} catch (NullPointerException e) {}
-						                			}
+						                			}	
 					                			} else {
 						                			Log.d("KILLING PROCESS "+i.processName, Integer.toString(i.pid));
-						                			am.killBackgroundProcesses(getPackageFromTaskList(info)[1]);
-						                			int pid;
 						                			try {
-						                				pid = isServiceRunning(ctx, getPackageFromTaskList(info)[1]);
-						                				if (pid !=420) {
+							                			am.killBackgroundProcesses(getPackageFromTaskList(info)[1]);
+							                			int pid;
+							                			pid = isServiceRunning(ctx, getPackageFromTaskList(info)[1]);
+						                				if (pid != 420) {
 							                				Log.d("KILLING SERVICE", serviceClassName(ctx, getPackageFromTaskList(info)[1]));
 								                			Intent service = new Intent(serviceClassName(ctx, getPackageFromTaskList(info)[1]));
 								                			ctx.stopService(service);

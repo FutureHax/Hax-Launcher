@@ -38,4 +38,8 @@ public 	class ParseHelper {
 			PushService.unsubscribe(c, "");
 		}
 	}
+	
+	public static void registerVipStatusBiatch(Context c) {
+		PushService.subscribe(c, "chat", ClientPushActivity.class);
+	}
 }

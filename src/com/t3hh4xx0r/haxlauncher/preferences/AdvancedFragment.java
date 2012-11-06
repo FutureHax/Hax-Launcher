@@ -7,9 +7,11 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
 import com.t3hh4xx0r.haxlauncher.R;
-import com.t3hh4xx0r.haxlauncher.menu.livepanel.PanelReceiver;
 
 public class AdvancedFragment extends PreferenceFragment {
 	
@@ -22,6 +24,8 @@ public class AdvancedFragment extends PreferenceFragment {
 	    public static final String HAS_ROOT = "com.t3hh4xx0r.haxlauncher.general_advanced_has_root"; 
 	   	    
 	    boolean hasRoot;
+	    
+	    GestureDetector gestureDetector;
 	    
 	   @Override
 	   public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,9 @@ public class AdvancedFragment extends PreferenceFragment {
 	      	editor.commit();	        
 	      	
 	      	setCurrentValues();
+	      	
+	        gestureDetector = new GestureDetector(this.getActivity(), new GestureListener());
+
 	   }
 
 	private void setCurrentValues() {
@@ -71,5 +78,28 @@ public class AdvancedFragment extends PreferenceFragment {
 	        }
 		}
 	    return false;
+	}
+	
+	public boolean onTouchEvent(MotionEvent e) {
+	    return gestureDetector.onTouchEvent(e);
+	}
+
+
+	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+	    @Override
+	    public boolean onDown(MotionEvent e) {
+	        return true;
+	    }
+	    // event when double tap occurs
+	    @Override
+	    public boolean onDoubleTap(MotionEvent e) {
+	        float x = e.getX();
+	        float y = e.getY();
+
+	        Log.d("Double Tap", "Tapped at: (" + x + "," + y + ")");
+
+	        return true;
+	    }
 	}
 }
