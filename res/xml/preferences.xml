@@ -20,7 +20,11 @@
     </PreferenceScreen> 
     <PreferenceScreen android:key="panels_details"
     	android:title="Live Panels">
-    </PreferenceScreen>       
+    </PreferenceScreen>   
+    
+	<Preference android:key="com.t3hh4xx0r.haxlauncher.view_client_push"
+		android:title="VIP Chat"
+      	android:summary="Chat with other Hax Launcher users using the built in chat system!"/>       
     <!-- UI -->
     <PreferenceCategory android:title="@string/preferences_interface_title">
         <!-- Homescreen -->

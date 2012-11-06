@@ -1,9 +1,11 @@
 package com.t3hh4xx0r.haxlauncher.preferences;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,6 +20,8 @@ import android.widget.ListView;
 import com.t3hh4xx0r.haxlauncher.FakeHome;
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.menu.livepanel.PanelMenuActivity;
+import com.t3hh4xx0r.haxlauncher.parse.ClientPushActivity;
+import com.t3hh4xx0r.haxlauncher.parse.PushLogin;
 
 public class PreferencesFragment extends PreferenceFragment {
 	
@@ -28,6 +32,8 @@ public class PreferencesFragment extends PreferenceFragment {
 	    boolean mDualPane;
 		int mCurCheckPosition = 0;
 	    
+	    public static final String REGISTER_CLIENT_PUSH = "com.t3hh4xx0r.haxlauncher.register_client_push";
+	    public static final String VIEW_CLIENT_PUSH = "com.t3hh4xx0r.haxlauncher.view_client_push";
 
 		@Override
 		public void onActivityCreated (Bundle savedInstanceState){
@@ -55,7 +61,6 @@ public class PreferencesFragment extends PreferenceFragment {
 			Intent home = new Intent("android.intent.action.MAIN");
 	        home.addCategory("android.intent.category.HOME");
 	        p.setSummary("Currently - " + getPrefered(home));
-
 		}
 		
 		
@@ -170,12 +175,15 @@ public class PreferencesFragment extends PreferenceFragment {
 				showDetails(DetailsFragmentManager.ABOUT);
 			}
 			if(key.equals("default")){
-				PackageManager pm = this.getActivity().getPackageManager();
 				makePrefered(this.getActivity());
 			}
 			if(key.equals("panels_details")){
 				Intent i = new Intent(this.getActivity(), PanelMenuActivity.class);
 				startActivity(i);
+			}
+			if (key.equals(VIEW_CLIENT_PUSH)) {
+				Intent i = new Intent(screen.getContext(), ClientPushActivity.class);
+				startActivity(i);	
 			}
 		    return false;
 		}
@@ -196,5 +204,6 @@ public class PreferencesFragment extends PreferenceFragment {
            PackageManager pm = this.getActivity().getPackageManager();
 		   final ResolveInfo mInfo = pm.resolveActivity(i, 0);
 		   return (String) pm.getApplicationLabel(mInfo.activityInfo.applicationInfo);
-	   }
+	   }	   
 }
+

@@ -24,8 +24,7 @@ public class PushFragment extends PreferenceFragment {
 	    public static final String ENABLE_PUSH = "com.t3hh4xx0r.haxlauncher.general_push_enable"; 
 	    public static final String ENABLE_TEST_PUSH = "com.t3hh4xx0r.haxlauncher.general_push_enable_test"; 
 	    public static final String ENABLE_UPDATES_PUSH = "com.t3hh4xx0r.haxlauncher.general_push_enable_updates"; 
-	    public static final String REGISTER_CLIENT_PUSH = "com.t3hh4xx0r.haxlauncher.register_client_push";
-	    public static final String VIEW_CLIENT_PUSH = "com.t3hh4xx0r.haxlauncher.view_client_push";
+
 	   @Override
 	   public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
@@ -36,11 +35,7 @@ public class PushFragment extends PreferenceFragment {
 	        editor = sharedPrefs.edit();
 	      	editor.putBoolean(PreferencesProvider.PREFERENCES_CHANGED, true);
 	      	editor.commit();	        
-	      	
-	      	if (PushLogin.PrivatePushPreferencesProvider.getHasClientPush(this.getActivity())) { 
-	      		Preference p = prefs.findPreference(VIEW_CLIENT_PUSH);
-	      		p.setEnabled(true);
-	      	}
+	      		      	
 	      	setCurrentValues();
 	   }
 
@@ -63,55 +58,13 @@ public class PushFragment extends PreferenceFragment {
 			boolean value = ((CheckBoxPreference)preference).isChecked();
 			editor.putBoolean(key, value);
 			ParseHelper.registerForPush(this.getActivity());
-		} else if (key.equals(REGISTER_CLIENT_PUSH)) {
-			final AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-	     	builder.setTitle("You wanna register?");
-	     	builder.setMessage("This is a new feature I'll be rolling out to the masses here in a bit.\n" +
-	     			"If you'd like early access, you can let me know why you'd like it here. Only a few " +
-	     			"people will get access to this service early.");
-	     	builder.setIcon(R.drawable.ic_launcher_application);
-	     	builder.setPositiveButton("Yes please!", new android.content.DialogInterface.OnClickListener() {
-	 			@Override
-	 			public void onClick(DialogInterface dialog, int which) {
-	 				dialog.cancel();
-	 		        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-	 		        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"r2doesinc@gmail.com"});
-	 		        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new String[]{"RE:Client Push Request"});
-	 		        emailIntent.setType("plain/text");
-	 		        startActivity(Intent.createChooser(emailIntent, "Send via"));
-	 			}
-	     	});
-	     	builder.setNegativeButton("No thanks!", new android.content.DialogInterface.OnClickListener() {
-	 			@Override
-	 			public void onClick(DialogInterface dialog, int which) {
-	 				dialog.cancel();
-	 			}
-	     	});
-	     	builder.setNeutralButton("I'm VIP!", new android.content.DialogInterface.OnClickListener() {
-	 			@Override
-	 			public void onClick(DialogInterface dialog, int which) {	 				
-	 				dialog.cancel();
-	 				Intent i = new Intent(builder.getContext(), PushLogin.class);
-	 				startActivity(i);	 				
-	 			}
-	     	});
-	     	builder.show();	
-		} else if (key.equals(VIEW_CLIENT_PUSH) && 
-				PushLogin.PrivatePushPreferencesProvider.getHasClientPush(screen.getContext())) {
-			Intent i = new Intent(screen.getContext(), ClientPushActivity.class);
-			startActivity(i);	
-		}
+		} 
 		return false;
 	}
 		
 	@Override
 	public void onResume(){
 		super.onResume();
-		
-		if (PushLogin.PrivatePushPreferencesProvider.getHasClientPush(this.getActivity())) { 
-      		Preference p = prefs.findPreference(VIEW_CLIENT_PUSH);
-      		p.setEnabled(true);
-      	}
       	setCurrentValues();
 	}
 }

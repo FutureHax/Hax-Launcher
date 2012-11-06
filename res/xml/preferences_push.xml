@@ -16,11 +16,5 @@
 		android:dependency="com.t3hh4xx0r.haxlauncher.general_push_enable"
       	android:summary="@string/preferences_general_push_enable_updates_summary"
       	android:defaultValue="true" />	  
-	<Preference android:key="com.t3hh4xx0r.haxlauncher.register_client_push"
-		android:title="Enable Client Push Notifications"
-      	android:summary="Enable push notifications sent from YOUR device!" /> 
-	<Preference android:key="com.t3hh4xx0r.haxlauncher.view_client_push"
-		android:title="View Client Push Notifications"
-      	android:summary="Check out all push notifications from others and send your own!"
-      	android:enabled="false" />       	            
+	            
  </PreferenceScreen>

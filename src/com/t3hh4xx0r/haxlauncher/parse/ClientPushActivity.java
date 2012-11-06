@@ -40,6 +40,12 @@ public class ClientPushActivity extends Activity {
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.client_push);
+		
+		if (!PushLogin.PrivatePushPreferencesProvider.getHasClientPush(getApplicationContext())) {
+			Intent login = new Intent(this, PushLogin.class);
+			this.startActivityForResult(login, 420);		
+		}
+		
 	    lv1 = (ListView) findViewById(R.id.display_list);  
 	    lv1.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 	    lv1.setStackFromBottom(true);
@@ -120,5 +126,20 @@ public class ClientPushActivity extends Activity {
 			a.notifyDataSetChanged();
 		}
 	}
-
+	
+	@Override
+	protected void onActivityResult(
+	    int aRequestCode, int aResultCode, Intent aData) {
+	    switch (aRequestCode) {
+	        case 420:
+	            if (aResultCode == Activity.RESULT_OK &&
+	            		PushLogin.PrivatePushPreferencesProvider.getHasClientPush(getApplicationContext())) {
+	            	//logged in
+	            } else {
+	            	finish();
+	            }
+	            break;	        
+	    }
+	    super.onActivityResult(aRequestCode, aResultCode, aData);
+	}
 }
