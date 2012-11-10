@@ -109,7 +109,7 @@ public class Cling extends FrameLayout {
 
     private int[] getPunchThroughPosition() {
         if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)) {
-            return new int[]{getMeasuredWidth() / 2, getMeasuredHeight() - (mButtonBarHeight / 2)};
+        	return new int[]{getMeasuredWidth() / mLauncher.getHotseat().mCellCountX, getMeasuredHeight() - (mButtonBarHeight / 2)};
         } else if (mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)) {
             return new int[]{getMeasuredWidth() - (mButtonBarHeight / 2), getMeasuredHeight() / 2};
         } else if (mDrawIdentifier.equals(WORKSPACE_LARGE)) {
