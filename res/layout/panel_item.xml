@@ -18,13 +18,13 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical" >
 
-        <TextView
+        <com.t3hh4xx0r.haxlauncher.StyledTextFoo
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <TextView
+        <com.t3hh4xx0r.haxlauncher.StyledTextFoo
             android:id="@+id/desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -17,13 +17,12 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
-import android.widget.ImageView;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.t3hh4xx0r.haxlauncher.R;
 

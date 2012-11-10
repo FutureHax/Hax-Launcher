@@ -19,11 +19,10 @@ package com.t3hh4xx0r.haxlauncher;
 import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
-//import android.graphics.MaskFilter;
+import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-//import android.graphics.TableMaskFilter;
 
 public class HolographicOutlineHelper {
     private final Paint mHolographicPaint = new Paint();
@@ -61,7 +60,6 @@ public class HolographicOutlineHelper {
         sMediumInnerBlurMaskFilter = new BlurMaskFilter(scale * 2.0f, BlurMaskFilter.Blur.NORMAL);
     }
 
-//    private static final MaskFilter sCoarseClipTable = TableMaskFilter.CreateClipTable(0, 200);
 
     private int[] mTempOffset = new int[2];
 
@@ -73,8 +71,6 @@ public class HolographicOutlineHelper {
         mErasePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
         mErasePaint.setFilterBitmap(true);
         mErasePaint.setAntiAlias(true);
-//        MaskFilter alphaClipTable = TableMaskFilter.CreateClipTable(180, 255);
-//        mAlphaClipPaint.setMaskFilter(alphaClipTable);
     }
 
     /**
@@ -108,7 +104,6 @@ public class HolographicOutlineHelper {
         Bitmap glow = bitmap.extractAlpha(mBlurPaint, mTempOffset);
 
         // Use the clip table to make the glow heavier closer to the outline
-//        mHolographicPaint.setMaskFilter(sCoarseClipTable);
         mHolographicPaint.setAlpha(150);
         mHolographicPaint.setColor(color);
 

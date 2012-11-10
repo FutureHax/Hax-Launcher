@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 import android.widget.ToggleButton;
 
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
@@ -24,8 +24,8 @@ import dalvik.system.PathClassLoader;
 
 public class PanelDetails extends Activity {	
 	byte[] screenCapRaw;
-	TextView title;
-	TextView desc;
+	StyledTextFoo title;
+	StyledTextFoo desc;
 	ImageView screenCap;
 	
 	String pName;
@@ -39,8 +39,8 @@ public class PanelDetails extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.panel_deets);
-		title = (TextView) findViewById(R.id.title);
-		desc = (TextView) findViewById(R.id.desc);
+		title = (StyledTextFoo) findViewById(R.id.title);
+		desc = (StyledTextFoo) findViewById(R.id.desc);
 		screenCap = (ImageView) findViewById(R.id.screencap);
 		statusToggle = (ToggleButton) findViewById(R.id.status_toggle);
 		statusToggle.setOnClickListener(new OnClickListener() {

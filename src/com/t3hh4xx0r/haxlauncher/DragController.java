@@ -16,6 +16,8 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
@@ -31,8 +33,6 @@ import android.view.ViewConfiguration;
 import android.view.inputmethod.InputMethodManager;
 
 import com.t3hh4xx0r.haxlauncher.R;
-
-import java.util.ArrayList;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -61,7 +61,7 @@ public class DragController {
 
     private Launcher mLauncher;
     private Handler mHandler;
-    private final Vibrator mVibrator;// = new Vibrator();
+    private final Vibrator mVibrator;
 
     // temporaries to avoid gc thrash
     private Rect mRectTemp = new Rect();

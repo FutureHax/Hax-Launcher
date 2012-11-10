@@ -16,15 +16,15 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.net.URISyntaxException;
+
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.widget.Toast;
-
-import java.net.URISyntaxException;
 
 import com.t3hh4xx0r.haxlauncher.R;
 

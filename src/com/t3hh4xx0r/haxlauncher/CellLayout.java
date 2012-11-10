@@ -16,6 +16,10 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -49,10 +53,6 @@ import android.view.animation.LayoutAnimationController;
 
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.FolderIcon.FolderRingAnimator;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class CellLayout extends ViewGroup {
     static final String TAG = "CellLayout";

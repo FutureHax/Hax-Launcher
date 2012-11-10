@@ -16,6 +16,8 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.util.ArrayList;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -34,8 +36,6 @@ import android.widget.TabWidget;
 import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.R;
-
-import java.util.ArrayList;
 
 public class AppsCustomizeTabHost extends TabHost implements LauncherTransitionable,
         TabHost.OnTabChangeListener  {
@@ -115,12 +115,12 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         tabView.setText(label);
         tabView.setContentDescription(label);
         addTab(newTabSpec(APPS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
-//        label = getContext().getString(R.string.widgets_tab_label);
-//        tabView = (StyledTextFoo) mLayoutInflater.inflate(R.layout.tab_widget_indicator, tabs, false);
-//        tabView.setText(label);
-//        tabView.setContentDescription(label);
-//        addTab(newTabSpec(WIDGETS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
-//        setOnTabChangedListener(this);
+        label = getContext().getString(R.string.widgets_tab_label);
+        tabView = (StyledTextFoo) mLayoutInflater.inflate(R.layout.tab_widget_indicator, tabs, false);
+        tabView.setText(label);
+        tabView.setContentDescription(label);
+        addTab(newTabSpec(WIDGETS_TAB_TAG).setIndicator(tabView).setContent(contentFactory));
+        setOnTabChangedListener(this);
 
         // Setup the key listener to jump between the last tab view and the market icon
         AppsCustomizeTabKeyEventListener keyListener = new AppsCustomizeTabKeyEventListener();

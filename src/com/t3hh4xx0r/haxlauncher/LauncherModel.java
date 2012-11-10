@@ -16,6 +16,15 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.lang.ref.WeakReference;
+import java.net.URISyntaxException;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+
 import android.app.SearchManager;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -49,15 +58,6 @@ import android.util.Log;
 
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.InstallWidgetReceiver.WidgetMimeTypeHandlerData;
-
-import java.lang.ref.WeakReference;
-import java.net.URISyntaxException;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -230,7 +230,8 @@ public class LauncherModel extends BroadcastReceiver {
                 // Items are added/removed from the corresponding FolderInfo elsewhere, such
                 // as in Workspace.onDrop. Here, we just add/remove them from the list of items
                 // that are on the desktop, as appropriate
-                if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ) {
+                if (modelItem.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                        modelItem.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                     if (!sWorkspaceItems.contains(modelItem)) {
                         sWorkspaceItems.add(modelItem);
                     }
@@ -255,7 +256,14 @@ public class LauncherModel extends BroadcastReceiver {
         item.cellX = cellX;
         item.cellY = cellY;
 
-        item.screen = screen;
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        if (context instanceof Launcher && screen < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        } else {
+            item.screen = screen;
+        }
 
         final ContentValues values = new ContentValues();
         values.put(LauncherSettings.Favorites.CONTAINER, item.container);
@@ -407,7 +415,14 @@ public class LauncherModel extends BroadcastReceiver {
         item.container = container;
         item.cellX = cellX;
         item.cellY = cellY;
-        item.screen = screen;
+        // We store hotseat items in canonical form which is this orientation invariant position
+        // in the hotseat
+        if (context instanceof Launcher && screen < 0 &&
+                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            item.screen = ((Launcher) context).getHotseat().getOrderInHotseat(cellX, cellY);
+        } else {
+            item.screen = screen;
+        }
 
         final ContentValues values = new ContentValues();
         final ContentResolver cr = context.getContentResolver();
@@ -435,7 +450,8 @@ public class LauncherModel extends BroadcastReceiver {
                         // Fall through
                     case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                     case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
+                                item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                             sWorkspaceItems.add(item);
                         }
                         break;
@@ -561,10 +577,6 @@ public class LauncherModel extends BroadcastReceiver {
         if (DEBUG_LOADERS) Log.d(TAG, "onReceive intent=" + intent);
 
         final String action = intent.getAction();
-        
-        
-        final String INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED =
-        		"android.search.action.GLOBAL_SEARCH_ACTIVITY_CHANGED";
 
         if (Intent.ACTION_PACKAGE_CHANGED.equals(action)
                 || Intent.ACTION_PACKAGE_REMOVED.equals(action)
@@ -624,7 +636,7 @@ public class LauncherModel extends BroadcastReceiver {
              }
              // Update previousConfig
              mPreviousConfigMcc = currentConfig.mcc;
-        } else if (INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED.equals(action) ||
+        } else if ("android.search.action.GLOBAL_SEARCH_ACTIVITY_CHANGED".equals(action) ||
                    SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED.equals(action)) {
             if (mCallbacks != null) {
                 Callbacks callbacks = mCallbacks.get();
@@ -906,7 +918,24 @@ public class LauncherModel extends BroadcastReceiver {
         // check & update map of what's occupied; used to discard overlapping/invalid items
         private boolean checkItemPlacement(ItemInfo occupied[][][], ItemInfo item) {
             int containerIndex = item.screen;
-            if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+            if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+                // Return early if we detect that an item is under the hotseat button
+                if (Hotseat.isMenuButtonRank(item.screen)) {
+                    return false;
+                }
+
+                // We use the last index to refer to the hotseat and the screen as the rank, so
+                // test and update the occupied state accordingly
+                if (occupied[Launcher.SCREEN_COUNT][item.screen][0] != null) {
+                    Log.e(TAG, "Error loading shortcut into hotseat " + item
+                        + " into position (" + item.screen + ":" + item.cellX + "," + item.cellY
+                        + ") occupied by " + occupied[Launcher.SCREEN_COUNT][item.screen][0]);
+                    return false;
+                } else {
+                    occupied[Launcher.SCREEN_COUNT][item.screen][0] = item;
+                    return true;
+                }
+            } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                 // Skip further checking if it is not the hotseat or workspace container
                 return true;
             }
@@ -1038,7 +1067,9 @@ public class LauncherModel extends BroadcastReceiver {
 
                                 switch (container) {
                                 case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                
+                                case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
+                                    sWorkspaceItems.add(info);
+                                    break;
                                 default:
                                     // Item is in a user folder
                                     FolderInfo folderInfo =
@@ -1081,7 +1112,9 @@ public class LauncherModel extends BroadcastReceiver {
                             }
                             switch (container) {
                                 case LauncherSettings.Favorites.CONTAINER_DESKTOP:
-                                
+                                case LauncherSettings.Favorites.CONTAINER_HOTSEAT:
+                                    sWorkspaceItems.add(folderInfo);
+                                    break;
                             }
 
                             sItemsIdMap.put(folderInfo.id, folderInfo);
@@ -1113,7 +1146,8 @@ public class LauncherModel extends BroadcastReceiver {
                                 appWidgetInfo.spanY = c.getInt(spanYIndex);
 
                                 container = c.getInt(containerIndex);
-                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                                if (container != LauncherSettings.Favorites.CONTAINER_DESKTOP &&
+                                    container != LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                                     Log.e(TAG, "Widget found where container "
                                         + "!= CONTAINER_DESKTOP nor CONTAINER_HOTSEAT - ignoring!");
                                     continue;

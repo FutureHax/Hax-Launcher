@@ -16,7 +16,6 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -29,8 +28,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.widget.FrameLayout;
 
 import com.t3hh4xx0r.haxlauncher.R;
@@ -62,9 +59,9 @@ public class Cling extends FrameLayout {
     private int mButtonBarHeight;
     private float mRevealRadius;
     private int[] mPositionData;
+
     private Paint mErasePaint;
-    private Context ctx;
-    
+
     public Cling(Context context) {
         this(context, null, 0);
     }
@@ -75,7 +72,7 @@ public class Cling extends FrameLayout {
 
     public Cling(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        ctx = context;
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Cling, defStyle, 0);
         mDrawIdentifier = a.getString(R.styleable.Cling_drawIdentifier);
         a.recycle();
@@ -110,9 +107,9 @@ public class Cling extends FrameLayout {
         mIsInitialized = false;
     }
 
-    private int[] getPunchThroughPosition() {    	
-        if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)) {        	
-            return new int[]{getMeasuredWidth() / mLauncher.getHotseat().mCellCountX, getMeasuredHeight() - (mButtonBarHeight / 2)};
+    private int[] getPunchThroughPosition() {
+        if (mDrawIdentifier.equals(WORKSPACE_PORTRAIT)) {
+            return new int[]{getMeasuredWidth() / 2, getMeasuredHeight() - (mButtonBarHeight / 2)};
         } else if (mDrawIdentifier.equals(WORKSPACE_LANDSCAPE)) {
             return new int[]{getMeasuredWidth() - (mButtonBarHeight / 2), getMeasuredHeight() / 2};
         } else if (mDrawIdentifier.equals(WORKSPACE_LARGE)) {

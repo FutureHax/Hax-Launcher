@@ -16,7 +16,14 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
-import android.app.SearchManager;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -49,15 +56,6 @@ import android.util.Xml;
 
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.LauncherSettings.Favorites;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "Launcher.LauncherProvider";
@@ -264,7 +262,49 @@ public class LauncherProvider extends ContentProvider {
             if (mAppWidgetHost != null) {
                 mAppWidgetHost.deleteHost();
                 sendAppWidgetResetNotify();
-            }          
+            }
+
+            if (!convertDatabase(db)) {
+                // Populate favorites table with initial favorites
+                loadFavorites(db, R.xml.default_workspace);
+            }
+        }
+
+        private boolean convertDatabase(SQLiteDatabase db) {
+            if (LOGD) Log.d(TAG, "converting database from an older format, but not onUpgrade");
+            boolean converted = false;
+
+            final Uri uri = Uri.parse("content://" + Settings.AUTHORITY +
+                    "/old_favorites?notify=true");
+            final ContentResolver resolver = mContext.getContentResolver();
+            Cursor cursor = null;
+
+            try {
+                cursor = resolver.query(uri, null, null, null, null);
+            } catch (Exception e) {
+                // Ignore
+            }
+
+            // We already have a favorites database in the old provider
+            if (cursor != null && cursor.getCount() > 0) {
+                try {
+                    converted = copyFromCursor(db, cursor) > 0;
+                } finally {
+                    cursor.close();
+                }
+
+                if (converted) {
+                    resolver.delete(uri, null, null);
+                }
+            }
+            
+            if (converted) {
+                // Convert widgets from this import into widgets
+                if (LOGD) Log.d(TAG, "converted and now triggering widget upgrade");
+                convertWidgets(db);
+            }
+
+            return converted;
         }
 
         private int copyFromCursor(SQLiteDatabase db, Cursor c) {
@@ -651,25 +691,6 @@ public class LauncherProvider extends ContentProvider {
                 }
             }
         }
-        
-        private static final void beginDocument(XmlPullParser parser, String firstElementName) throws XmlPullParserException, IOException
-        {
-            int type;
-            while ((type=parser.next()) != parser.START_TAG
-                       && type != parser.END_DOCUMENT) {
-                ;
-            }
-
-            if (type != parser.START_TAG) {
-                throw new XmlPullParserException("No start tag found");
-            }
-
-            if (!parser.getName().equals(firstElementName)) {
-                throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
-                        ", expected " + firstElementName);
-            }
-        }
-
 
         /**
          * Loads the default set of favorite packages from an xml file.
@@ -712,6 +733,14 @@ public class LauncherProvider extends ContentProvider {
                     String screen = a.getString(R.styleable.Favorite_screen);
                     String x = a.getString(R.styleable.Favorite_x);
                     String y = a.getString(R.styleable.Favorite_y);
+
+                    // If we are adding to the hotseat, the screen is used as the position in the
+                    // hotseat. This screen can't be at position 0 because AllApps is in the
+                    // zeroth position.
+                    if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
+                            Hotseat.isMenuButtonRank(Integer.valueOf(screen))) {
+                        throw new RuntimeException("Invalid screen position for hotseat item");
+                    }
 
                     values.clear();
                     values.put(LauncherSettings.Favorites.CONTAINER, container);
@@ -1033,4 +1062,21 @@ public class LauncherProvider extends ContentProvider {
             }
         }
     }
+    
+    private static final void beginDocument(XmlPullParser parser, String firstElementName) throws XmlPullParserException, IOException {
+        int type;
+        while ((type=parser.next()) != XmlPullParser.START_TAG
+                   && type != XmlPullParser.END_DOCUMENT) {
+            ;
+        }
+
+        if (type != XmlPullParser.START_TAG) {
+            throw new XmlPullParserException("No start tag found");
+        }
+
+        if (!parser.getName().equals(firstElementName)) {
+            throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
+                    ", expected " + firstElementName);
+        }
+    }    
 }

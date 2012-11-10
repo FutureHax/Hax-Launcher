@@ -47,7 +47,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.menu.LauncherMenu;
 import com.t3hh4xx0r.haxlauncher.preferences.PreferencesFragment;

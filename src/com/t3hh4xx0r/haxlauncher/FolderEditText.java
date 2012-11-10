@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.widget.EditText;
 
-public class FolderEditText extends EditText {
+public class FolderEditText extends StyledEditText {
 
     private Folder mFolder;
 

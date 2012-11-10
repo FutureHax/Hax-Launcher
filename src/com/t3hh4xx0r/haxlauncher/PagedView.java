@@ -16,6 +16,8 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.util.ArrayList;
+
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
@@ -47,8 +49,6 @@ import android.widget.ImageView;
 import android.widget.Scroller;
 
 import com.t3hh4xx0r.haxlauncher.R;
-
-import java.util.ArrayList;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a

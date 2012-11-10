@@ -3,21 +3,21 @@ package com.t3hh4xx0r.haxlauncher;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.TextView;
+import android.widget.EditText;
 
-public class StyledTextFoo extends TextView {
+public class StyledEditText extends EditText {
 
-	public StyledTextFoo(Context context) {
+	public StyledEditText(Context context) {
 		super(context);
         init(context);
 	}
 	
-    public StyledTextFoo(Context context, AttributeSet attrs) {
+    public StyledEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public StyledTextFoo(Context context, AttributeSet attrs, int defStyle) {
+    public StyledEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }
@@ -30,6 +30,5 @@ public class StyledTextFoo extends TextView {
 	     Typeface font = Typeface.createFromAsset(c.getAssets(), otfName);
 	     this.setTypeface(font);
 	}
-	
-	
+
 }

@@ -28,16 +28,16 @@ import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.R;
 
 /**
- * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
- * because we want to make the bubble taller than the text and TextView's clip is
+ * StyledTextFoo that draws a bubble behind the text. We cannot use a LineBackgroundSpan
+ * because we want to make the bubble taller than the text and StyledTextFoo's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView {
+public class BubbleTextView extends StyledTextFoo {
     static final float CORNER_RADIUS = 4.0f;
     static final float SHADOW_LARGE_RADIUS = 4.0f;
     static final float SHADOW_SMALL_RADIUS = 1.75f;
@@ -173,7 +173,7 @@ public class BubbleTextView extends TextView {
             getExtendedPaddingTop() - (int) BubbleTextView.PADDING_V + getLayout().getLineTop(0);
 
         // Draw the View into the bitmap.
-        // The translate of scrollX and scrollY is necessary when drawing TextViews, because
+        // The translate of scrollX and scrollY is necessary when drawing StyledTextFoos, because
         // they set scrollX and scrollY to large values to achieve centered text
         destCanvas.save();
         destCanvas.translate(-getScrollX() + padding / 2, -getScrollY() + padding / 2);
@@ -270,11 +270,11 @@ public class BubbleTextView extends TextView {
     public void draw(Canvas canvas) {
         final Drawable background = mBackground;
         if (background != null) {
-            final int scrollX = computeHorizontalScrollOffset();
-            final int scrollY = computeVerticalScrollOffset();
+            final int scrollX = getScrollX();
+            final int scrollY = getScrollY();
 
             if (mBackgroundSizeChanged) {
-                background.setBounds(0, 0,  getWidth(), getHeight());
+                background.setBounds(0, 0,  getRight() - getLeft(), getBottom() - getTop());
                 mBackgroundSizeChanged = false;
             }
 
@@ -290,8 +290,8 @@ public class BubbleTextView extends TextView {
         getPaint().setShadowLayer(SHADOW_LARGE_RADIUS, 0.0f, SHADOW_Y_OFFSET, SHADOW_LARGE_COLOUR);
         super.draw(canvas);
         canvas.save(Canvas.CLIP_SAVE_FLAG);
-        canvas.clipRect(computeHorizontalScrollOffset(), computeVerticalScrollOffset() + getExtendedPaddingTop(), computeHorizontalScrollOffset() + getWidth(),
-                computeVerticalScrollOffset() + getHeight(), Region.Op.INTERSECT);
+        canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(), getScrollX() + getWidth(),
+                getScrollY() + getHeight(), Region.Op.INTERSECT);
         getPaint().setShadowLayer(SHADOW_SMALL_RADIUS, 0.0f, 0.0f, SHADOW_SMALL_COLOUR);
         super.draw(canvas);
         canvas.restore();

@@ -16,12 +16,12 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
-import com.t3hh4xx0r.haxlauncher.R;
-
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
+
+import com.t3hh4xx0r.haxlauncher.R;
 
 public class WallpaperChooser extends Activity {
     private static final String TAG = "Launcher.WallpaperChooser";

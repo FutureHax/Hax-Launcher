@@ -17,7 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 import android.widget.Toast;
 
 import com.t3hh4xx0r.haxlauncher.R;
@@ -43,18 +43,18 @@ public class MenuSettingsAdapter extends BaseAdapter implements OnClickListener{
     private ImageButton mSyncButton;
 
     /* Button Descriptions */
-    private TextView mWifiDesc;
-    private TextView mDataDesc;
-    private TextView mSoundDesc;
-    private TextView mRotationDesc;
-    private TextView mAirplaneDesc;
-    private TextView mLteDesc;
-    private TextView mTetherDesc;
-    private TextView mBluetoothDesc;
-    private TextView mGpsDesc;
-    private TextView mBrightnessDesc;
-    private TextView mTorchDesc;
-    private TextView mSyncDesc;
+    private StyledTextFoo mWifiDesc;
+    private StyledTextFoo mDataDesc;
+    private StyledTextFoo mSoundDesc;
+    private StyledTextFoo mRotationDesc;
+    private StyledTextFoo mAirplaneDesc;
+    private StyledTextFoo mLteDesc;
+    private StyledTextFoo mTetherDesc;
+    private StyledTextFoo mBluetoothDesc;
+    private StyledTextFoo mGpsDesc;
+    private StyledTextFoo mBrightnessDesc;
+    private StyledTextFoo mTorchDesc;
+    private StyledTextFoo mSyncDesc;
     int mWifiApEnabled;
     int mRingerMode;
     int mNetworkMode;

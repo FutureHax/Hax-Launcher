@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true">
     </ImageButton>
 
-    <TextView
+    <com.t3hh4xx0r.haxlauncher.StyledTextFoo
         android:id="@+id/tether_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,5 +24,5 @@
         android:text="@string/tether_desc"
         android:textSize="12dip"
         android:textColor="#FFFFFFFF">
-    </TextView>
+    </com.t3hh4xx0r.haxlauncher.StyledTextFoo>
 </RelativeLayout>

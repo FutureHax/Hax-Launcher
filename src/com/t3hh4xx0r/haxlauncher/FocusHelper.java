@@ -16,6 +16,10 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import android.content.res.Configuration;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,10 +29,6 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 
 import com.t3hh4xx0r.haxlauncher.R;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * A keyboard listener we set on all the workspace icons.

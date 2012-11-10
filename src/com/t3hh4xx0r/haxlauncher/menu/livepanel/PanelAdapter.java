@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
+import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
 import com.t3hh4xx0r.haxlauncher.R;
@@ -49,8 +49,8 @@ public class PanelAdapter extends BaseAdapter {
 		 if (convertView == null) {
 			  convertView = mInflater.inflate(R.layout.panel_item, null);
 			  holder = new ViewHolder();
-			  holder.title = (TextView) convertView.findViewById(R.id.title);
-			  holder.desc = (TextView) convertView.findViewById(R.id.desc);
+			  holder.title = (StyledTextFoo) convertView.findViewById(R.id.title);
+			  holder.desc = (StyledTextFoo) convertView.findViewById(R.id.desc);
 			  holder.icon = (ImageView) convertView.findViewById(R.id.icon);
 			  convertView.setTag(holder);   	   	  
 		  } else {
@@ -88,8 +88,8 @@ public class PanelAdapter extends BaseAdapter {
 	 }
 
 	 static class ViewHolder {
-		  TextView title;
-		  TextView desc;
+		  StyledTextFoo title;
+		  StyledTextFoo desc;
 		  ImageView icon;
 	 }
 }

@@ -15,6 +15,9 @@
  */
 package com.t3hh4xx0r.haxlauncher;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -43,14 +46,11 @@ import android.widget.SpinnerAdapter;
 
 import com.t3hh4xx0r.haxlauncher.R;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 public class WallpaperChooserDialogFragment extends DialogFragment implements
         AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
 
     private static final String TAG = "Launcher.WallpaperChooserDialogFragment";
-    private static final String EMBEDDED_KEY = "com.t3hh4xx0r.haxlauncher."
+    private static final String EMBEDDED_KEY = "com.mycolorscreen.canvas."
             + "WallpaperChooserDialogFragment.EMBEDDED_KEY";
 
     private boolean mEmbedded;
@@ -203,7 +203,7 @@ public class WallpaperChooserDialogFragment extends DialogFragment implements
 
         final Resources resources = getResources();
         // Context.getPackageName() may return the "original" package name,
-        // com.android.launcher2; Resources needs the real package name,
+        // com.mycolorscreen.canvas; Resources needs the real package name,
         // com.android.launcher. So we ask Resources for what it thinks the
         // package name should be.
         final String packageName = resources.getResourcePackageName(R.array.wallpapers);

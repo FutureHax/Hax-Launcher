@@ -1,11 +1,9 @@
 package com.t3hh4xx0r.haxlauncher.preferences;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,15 +11,14 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.view.View;
 import android.widget.ListView;
 
 import com.t3hh4xx0r.haxlauncher.FakeHome;
+import com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft;
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.menu.livepanel.PanelMenuActivity;
 import com.t3hh4xx0r.haxlauncher.parse.ClientPushActivity;
-import com.t3hh4xx0r.haxlauncher.parse.PushLogin;
 
 public class PreferencesFragment extends PreferenceFragment {
 	
@@ -57,7 +54,7 @@ public class PreferencesFragment extends PreferenceFragment {
 	        	((ListView)getView().findViewById(android.R.id.list)).setChoiceMode(ListView.CHOICE_MODE_NONE);
 	        }
 	        
-	        Preference p = getPreferenceScreen().findPreference("default");
+	        IconPreferenceScreenLeft p = (IconPreferenceScreenLeft) getPreferenceScreen().findPreference("default");
 			Intent home = new Intent("android.intent.action.MAIN");
 	        home.addCategory("android.intent.category.HOME");
 	        p.setSummary("Currently - " + getPrefered(home));
@@ -157,7 +154,7 @@ public class PreferencesFragment extends PreferenceFragment {
 	        addPreferencesFromResource(R.xml.preferences);
 	   }
 	   
-	   public boolean onPreferenceTreeClick(PreferenceScreen screen, Preference preference) {			
+	   public boolean onPreferenceTreeClick(IconPreferenceScreenLeft screen, Preference preference) {			
 			String key = preference.getKey();
 			if(key.equals("ui_homescreen")){
 				showDetails(DetailsFragmentManager.Interface.HOMESCREEN);

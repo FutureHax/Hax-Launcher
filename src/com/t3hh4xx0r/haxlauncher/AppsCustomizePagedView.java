@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+O * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
  */
 
 package com.t3hh4xx0r.haxlauncher;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -32,11 +37,9 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
-import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-//import android.graphics.TableMaskFilter;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Process;
@@ -47,7 +50,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -57,11 +59,6 @@ import android.widget.Toast;
 
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.DropTarget.DragObject;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * A simple callback interface which also provides the results of the task.
@@ -570,13 +567,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
         // We use a custom alpha clip table for the default widget previews
         Paint alphaClipPaint = null;
-        if (createItemInfo instanceof PendingAddWidgetInfo) {
-            if (((PendingAddWidgetInfo) createItemInfo).previewImage != 0) {
-//                MaskFilter alphaClipTable = TableMaskFilter.CreateClipTable(0, 255);
-                alphaClipPaint = new Paint();
-//                alphaClipPaint.setMaskFilter(alphaClipTable);
-            }
-        }
 
         // Save the preview for the outline generation, then dim the preview
         outline = Bitmap.createScaledBitmap(preview, preview.getWidth(), preview.getHeight(),
@@ -1368,9 +1358,9 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
                 v.setScaleX(scale);
                 v.setScaleY(scale);
                 v.setAlpha(alpha);
-
-                final float ALPHA_THRESHOLD = 0.5f / 24;
                 
+                final float ALPHA_THRESHOLD = 0.5f / 24;
+
                 // If the view has 0 alpha, we set it to be invisible so as to prevent
                 // it from accepting touches
                 if (alpha < ALPHA_THRESHOLD) {

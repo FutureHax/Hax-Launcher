@@ -16,6 +16,8 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.lang.ref.WeakReference;
+
 import android.app.Application;
 import android.app.SearchManager;
 import android.content.ContentResolver;
@@ -25,8 +27,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.os.Handler;
-
-import java.lang.ref.WeakReference;
 
 public class LauncherApplication extends Application {
     public LauncherModel mModel;
@@ -62,11 +62,7 @@ public class LauncherApplication extends Application {
         filter.addAction(Intent.ACTION_CONFIGURATION_CHANGED);
         registerReceiver(mModel, filter);
         filter = new IntentFilter();
-        
-        final String INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED =
-        		"android.search.action.GLOBAL_SEARCH_ACTIVITY_CHANGED";
-        
-        filter.addAction(INTENT_GLOBAL_SEARCH_ACTIVITY_CHANGED);
+        filter.addAction("android.search.action.GLOBAL_SEARCH_ACTIVITY_CHANGED");
         registerReceiver(mModel, filter);
         filter = new IntentFilter();
         filter.addAction(SearchManager.INTENT_ACTION_SEARCHABLES_CHANGED);

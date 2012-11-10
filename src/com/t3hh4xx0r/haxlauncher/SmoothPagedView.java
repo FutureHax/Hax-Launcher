@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ *  * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -175,7 +175,7 @@ public abstract class SmoothPagedView extends PagedView {
                 final float e = (float) Math.exp((now - mSmoothingTime) / SMOOTHING_CONSTANT);
 
                 final float dx = mTouchX - mUnboundedScrollX;
-                scrollTo(Math.round(mUnboundedScrollX + dx * e), computeVerticalScrollOffset());
+                scrollTo(Math.round(mUnboundedScrollX + dx * e), getScrollY());
                 mSmoothingTime = now;
 
                 // Keep generating points as long as we're more than 1px away from the target

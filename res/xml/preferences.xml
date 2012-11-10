@@ -15,56 +15,56 @@
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceScreen android:key="default"
+    <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="default"
     	android:title="Set Default Launcher Application">
-    </PreferenceScreen> 
-    <PreferenceScreen android:key="panels_details"
+    </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft> 
+    <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="panels_details"
     	android:title="Live Panels">
-    </PreferenceScreen>   
+    </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft>   
     
-	<Preference android:key="com.t3hh4xx0r.haxlauncher.view_client_push"
+	<com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="com.t3hh4xx0r.haxlauncher.view_client_push"
 		android:title="VIP Chat"
       	android:summary="Chat with other Hax Launcher users using the built in chat system!"/>       
     <!-- UI -->
     <PreferenceCategory android:title="@string/preferences_interface_title">
         <!-- Homescreen -->
-        <PreferenceScreen android:key="ui_homescreen"
+        <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="ui_homescreen"
             android:title="@string/preferences_interface_homescreen_title">
-        </PreferenceScreen>   
+        </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft>   
         <!-- Menu -->
-        <PreferenceScreen android:key="ui_menu"
+        <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="ui_menu"
             android:title="@string/preferences_interface_menu_title">
-        </PreferenceScreen> 
+        </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft> 
 
         <!-- Drawer -->
-        <PreferenceScreen android:key="ui_drawer"
+        <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="ui_drawer"
             android:title="@string/preferences_interface_drawer_title">
 
-        </PreferenceScreen>
+        </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft>
 
         <!-- Dock -->
-        <PreferenceScreen android:key="ui_dock"
+        <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="ui_dock"
             android:title="@string/preferences_interface_dock_title">
 
-        </PreferenceScreen>
+        </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft>
 
         <!-- Icons -->
-        <PreferenceScreen android:key="ui_icons"
+        <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="ui_icons"
             android:title="@string/preferences_interface_icons_title">
 
-        </PreferenceScreen>
+        </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft>
     </PreferenceCategory>
 
     <!-- General -->
     <PreferenceCategory android:title="@string/preferences_general_title">
         <!-- Push -->
-        <PreferenceScreen android:key="general_push"
+        <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="general_push"
             android:title="@string/preferences_general_push_title">
-        </PreferenceScreen>
+        </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft>
         
 		<!-- Advanced -->
-        <PreferenceScreen android:key="general_advanced"
+        <com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft android:key="general_advanced"
             android:title="@string/preferences_general_advanced_title">
-        </PreferenceScreen>	        
+        </com.t3hh4xx0r.haxlauncher.IconPreferenceScreenLeft>	        
     </PreferenceCategory>
 </PreferenceScreen>

@@ -16,6 +16,8 @@
 
 package com.t3hh4xx0r.haxlauncher;
 
+import java.util.ArrayList;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -41,8 +43,6 @@ import com.t3hh4xx0r.haxlauncher.StyledTextFoo;
 import com.t3hh4xx0r.haxlauncher.R;
 import com.t3hh4xx0r.haxlauncher.DropTarget.DragObject;
 import com.t3hh4xx0r.haxlauncher.FolderInfo.FolderListener;
-
-import java.util.ArrayList;
 
 /**
  * An icon that can appear on in the workspace representing an {@link UserFolder}.
@@ -298,23 +298,21 @@ public class FolderIcon extends LinearLayout implements FolderListener {
             final ShortcutInfo srcInfo, final View srcView, Rect dstRect,
             float scaleRelativeToDragLayer, Runnable postAnimationRunnable) {
 
-    	if (destView instanceof StyledTextFoo) {
-    		Drawable animateDrawable = ((StyledTextFoo) destView).getCompoundDrawables()[1];
-	        computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
-	
-	        // This will animate the dragView (srcView) into the new folder
-	        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable);
-	
-	        // This will animate the first item from it's position as an icon into its
-	        // position as the first item in the preview
-	        animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION);
-	
-	        postDelayed(new Runnable() {
-	            public void run() {
-	                addItem(destInfo);
-	            }
-	        }, INITIAL_ITEM_ANIMATION_DURATION);
-    	}
+        Drawable animateDrawable = ((StyledTextFoo) destView).getCompoundDrawables()[1];
+        computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(), destView.getMeasuredWidth());
+
+        // This will animate the dragView (srcView) into the new folder
+        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1, postAnimationRunnable);
+
+        // This will animate the first item from it's position as an icon into its
+        // position as the first item in the preview
+        animateFirstItem(animateDrawable, INITIAL_ITEM_ANIMATION_DURATION);
+
+        postDelayed(new Runnable() {
+            public void run() {
+                addItem(destInfo);
+            }
+        }, INITIAL_ITEM_ANIMATION_DURATION);
     }
 
     public void onDragExit(Object dragInfo) {
@@ -591,4 +589,5 @@ public class FolderIcon extends LinearLayout implements FolderListener {
         setContentDescription(String.format(getContext().getString(R.string.folder_name_format),
                 title));
     }
+    
 }
