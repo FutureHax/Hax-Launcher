@@ -166,10 +166,11 @@
 		  </intent-filter>
 		</receiver>     
 		
-	<receiver android:name="com.t3hh4xx0r.haxlauncher.parse.UpdateReceiver">
+	<receiver android:name="com.t3hh4xx0r.haxlauncher.parse.ParseReceiver">
 	  <intent-filter>
 	    <action android:name="com.t3hh4xx0r.haxlauncher.UPDATE" />
-	  </intent-filter>
+	    <action android:name="com.t3hh4xx0r.haxlauncher.MESSAGE" />
+	    	  </intent-filter>
 	</receiver>	
 	<receiver android:name=".menu.livepanel.PanelReceiver">
 	  <intent-filter>

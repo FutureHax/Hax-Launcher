@@ -663,19 +663,7 @@ public class LauncherProvider extends ContentProvider {
 
                         String updateWhere = Favorites._ID + "=" + favoriteId;
                         db.update(TABLE_FAVORITES, values, updateWhere, null);
-
-                        if (favoriteType == Favorites.ITEM_TYPE_WIDGET_CLOCK) {
-                            appWidgetManager.bindAppWidgetId(appWidgetId,
-                                    new ComponentName("com.android.alarmclock",
-                                    "com.android.alarmclock.AnalogAppWidgetProvider"));
-                        } else if (favoriteType == Favorites.ITEM_TYPE_WIDGET_PHOTO_FRAME) {
-                            appWidgetManager.bindAppWidgetId(appWidgetId,
-                                    new ComponentName("com.android.camera",
-                                    "com.android.camera.PhotoAppWidgetProvider"));
-                        } else if (favoriteType == Favorites.ITEM_TYPE_WIDGET_SEARCH) {
-                            appWidgetManager.bindAppWidgetId(appWidgetId,
-                                    getSearchWidgetProvider());
-                        }
+                       
                     } catch (RuntimeException ex) {
                         Log.e(TAG, "Problem allocating appWidgetId", ex);
                     }
@@ -967,7 +955,6 @@ public class LauncherProvider extends ContentProvider {
 
                 allocatedAppWidgets = true;
                 
-                appWidgetManager.bindAppWidgetId(appWidgetId, cn);
             } catch (RuntimeException ex) {
                 Log.e(TAG, "Problem allocating appWidgetId", ex);
             }

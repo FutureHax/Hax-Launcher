@@ -89,7 +89,7 @@ public final class PreferencesProvider {
 	      		boolean values[] = new boolean[3];
 	    		final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
 	    		values[0] = preferences.getBoolean(ENABLE_PUSH, true);    		
-	    		values[1] = preferences.getBoolean(ENABLE_TEST_PUSH, false); 
+	    		values[1] = preferences.getBoolean(ENABLE_TEST_PUSH, true); 
 	    		values[2] = preferences.getBoolean(ENABLE_UPDATES_PUSH, true); 		    		
 	    		return values;
 	    	}
