@@ -87,7 +87,11 @@ public class DockItemView extends RelativeLayout {
               	double diffXM = ((int) event.getX()) - mStartPoint.x;
               	double width = this.getWidth();
               	if (Math.abs(diffXM) >= 10) {
-             		this.getParent().requestDisallowInterceptTouchEvent(true);
+              		try {
+              			this.getParent().requestDisallowInterceptTouchEvent(true);
+              		} catch (Exception e) {
+              			Log.d("Throwing ", e.getMessage());
+              		}
 	              	scrollTo((int) -diffXM, 0);
 	                double alpha = 1-(Math.abs(diffXM)/(.75 * width));
 	                this.setAlpha((float)alpha);

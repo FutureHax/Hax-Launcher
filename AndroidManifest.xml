@@ -141,7 +141,9 @@
 		    android:exported="false"
             android:label="Welcome to VIP" />                            
 		<activity android:name=".menu.AddActivity" />                    
-        <!-- Intent received used to install shortcuts from other applications -->
+		<activity android:name=".parse.ParseUnsubscribeConfirmActivity"
+		    android:theme="@android:style/Theme.Holo.Dialog" />                    
+		<!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.t3hh4xx0r.haxlauncher.InstallShortcutReceiver"
             android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">

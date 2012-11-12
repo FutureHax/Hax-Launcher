@@ -20,7 +20,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
+
 import com.t3hh4xx0r.haxlauncher.Launcher;
 import com.t3hh4xx0r.haxlauncher.R;
 
@@ -29,6 +31,10 @@ public class ParseReceiver extends BroadcastReceiver {
 	public static final String action_message = "com.t3hh4xx0r.haxlauncher.MESSAGE";
 	public static final String action_update = "com.t3hh4xx0r.haxlauncher.UPDATE";  
 	LinkedHashMap<String, String> datas;
+	
+	public static final int TESTING = 0;
+	public static final int UPDATES = 1;
+	public static final int GLOBAL  = 2; 
 	
 	@TargetApi(16)
 	@Override				
@@ -74,15 +80,20 @@ public class ParseReceiver extends BroadcastReceiver {
 
   @TargetApi(16)
   private void notifyJellyBean() {
+		Bundle b = new Bundle();
+		
 	    Intent notiIntent = new Intent(c, Launcher.class);
-		Intent unSubIntent = new Intent(c, Launcher.class);
-
+		Intent unSubIntent = new Intent(c, ParseUnsubscribeConfirmActivity.class);
+		
 		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
 		sendIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
 		sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "r2doesinc@gmail.com" });
 		sendIntent.setData(Uri.parse("r2doesinc@gmail.com"));
 		sendIntent.putExtra(Intent.EXTRA_SUBJECT, "RE:"+datas.get("messageTitle"));
 		sendIntent.setType("plain/text");
+		
+		b.putInt("channel", parseChannel(datas.get("channel")));
+		unSubIntent.putExtras(b);
 		
 		PendingIntent pSendIntent = PendingIntent.getActivity(c, 0, sendIntent, 0);
 		PendingIntent pIntent = PendingIntent.getActivity(c, 0, notiIntent, 0);
@@ -93,7 +104,7 @@ public class ParseReceiver extends BroadcastReceiver {
 		        .setContentText(datas.get("messageShort"))
 		        .setSmallIcon(R.drawable.ic_launcher_application)
 		        .setContentIntent(pIntent)		        
-		        .addAction(R.drawable.ic_launcher_application, "Unsubscribe", pUnSubIntent)
+		        .addAction(R.drawable.ic_unsub, "Unsubscribe", pUnSubIntent)
 		        .addAction(R.drawable.ic_reply, "Reply", pSendIntent)
 		        .setStyle(new Notification.BigTextStyle().bigText(datas.get("messageLong"))).build();
 		    
@@ -109,6 +120,19 @@ public class ParseReceiver extends BroadcastReceiver {
 		notificationManager.notify(0, noti); 		
 	}
 
+	private int parseChannel(String s) {
+		if (s.equals("testing")) {
+			return 0;
+		} else if (s.equals("updates")) {
+			return 1;			
+		} else if (s.equals("")) {
+			return 2;
+		} else {
+			return 0;
+		}
+	}
+	
+
 	private LinkedHashMap<String, String> getDatas(Intent intent) {
 		  LinkedHashMap<String, String> d = new LinkedHashMap<String, String>();
 		  try {
@@ -122,6 +146,8 @@ public class ParseReceiver extends BroadcastReceiver {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		  
+		  d.put("channel", intent.getExtras().getString("com.parse.Channel"));
 		  return d;
 		}
 	
