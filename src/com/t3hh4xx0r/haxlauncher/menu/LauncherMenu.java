@@ -66,6 +66,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
@@ -361,42 +362,47 @@ public class LauncherMenu extends RelativeLayout {
 		DBAdapter db = new DBAdapter(mContext);
 		db.open();
 		c = db.getAllHotseats();
-		if (c.getCount() > 0) {
-			Object[] dArray;		
-			dArray = new Object[c.getCount()];
-			dArray[0] = 0;
-	   		hotseat = new DockItemView[c.getCount()];
-			hotseatIntents = new String[c.getCount()];
-			while (c.moveToNext()) {
-				hotseatIntents[c.getPosition()] = c.getString(c.getColumnIndex("intent"));
-				hotseat[c.getPosition()] = new DockItemView(mContext);
-				hotseat[c.getPosition()].setId(c.getPosition());
-				hotseat[c.getPosition()].setData(c.getString(c.getColumnIndex("intent")));
-				hotseat[c.getPosition()].setParent(dock);
-				byte[] icon = c.getBlob(c.getColumnIndex("icon"));
-				Bitmap b = BitmapFactory.decodeByteArray(icon, 0, icon.length);
-							
-				hotseat[c.getPosition()].getIcon().setImageBitmap(b);
-				hotseat[c.getPosition()].setPadding(5, 5, 5, 5);
-				hotseat[c.getPosition()].getIcon().setScaleType(ImageView.ScaleType.CENTER);
-				hotseat[c.getPosition()].getTitle().setText(c.getString(c.getColumnIndex("name")));
-				hotseat[c.getPosition()].setPName(hotseatIntents[c.getPosition()]);
-	
-				ScrollView.LayoutParams lp = new ScrollView.LayoutParams(ScrollView.LayoutParams.WRAP_CONTENT, ScrollView.LayoutParams.WRAP_CONTENT);
-				dock.addView(hotseat[c.getPosition()], lp);
-				dArray[c.getPosition()] = hotseat[c.getPosition()];
-	
-				dock.getChildAt(c.getPosition()).setVisibility(View.INVISIBLE);
-			}
+		Object[] dArray;	
+		dArray = new Object[c.getCount()+1];
+		dArray[0] = 0;
+	   	hotseat = new DockItemView[c.getCount()];
+		hotseatIntents = new String[c.getCount()];
+		ScrollView.LayoutParams lp = new ScrollView.LayoutParams(ScrollView.LayoutParams.WRAP_CONTENT, ScrollView.LayoutParams.WRAP_CONTENT);
+		while (c.moveToNext()) {
+			hotseatIntents[c.getPosition()] = c.getString(c.getColumnIndex("intent"));
+			hotseat[c.getPosition()] = new DockItemView(mContext);
+			hotseat[c.getPosition()].setId(c.getPosition());
+			hotseat[c.getPosition()].setData(c.getString(c.getColumnIndex("intent")));
+			hotseat[c.getPosition()].setParent(dock);
+			byte[] icon = c.getBlob(c.getColumnIndex("icon"));
+			Bitmap b = BitmapFactory.decodeByteArray(icon, 0, icon.length);
+						
+			hotseat[c.getPosition()].getIcon().setImageBitmap(b);
+			hotseat[c.getPosition()].setPadding(5, 5, 5, 5);
+			hotseat[c.getPosition()].getIcon().setScaleType(ImageView.ScaleType.CENTER);
+			hotseat[c.getPosition()].getTitle().setText(c.getString(c.getColumnIndex("name")));
+			hotseat[c.getPosition()].setPName(hotseatIntents[c.getPosition()]);
 		
-			LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,  
-	        		//TODO fix me
-					(int) + (height - getResources().getDimension(R.dimen.button_bar_height) - getSBHeight() - 10));
-	        dHolder.setLayoutParams(lp2);
-	        
-			AnimateDockTask d = new AnimateDockTask();
-			d.execute(dArray);
+			dock.addView(hotseat[c.getPosition()], lp);
+			dArray[c.getPosition()] = hotseat[c.getPosition()];
+	
+			dock.getChildAt(c.getPosition()).setVisibility(View.INVISIBLE);
 		}
+		
+		DockItemView addCard = new DockItemView(mContext);
+		addCard.getTitle().setText("ADDD");
+		addCard.setPName("420");
+		dock.addView(addCard, lp);
+		dock.getChildAt(dock.getChildCount()-1).setVisibility(View.INVISIBLE);
+		dArray[dock.getChildCount()-1] = addCard;
+						
+		LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,  
+	       		//TODO fix me
+				(int) + (height - getResources().getDimension(R.dimen.button_bar_height) - getSBHeight() - 10));
+	    dHolder.setLayoutParams(lp2);
+	       
+		AnimateDockTask d = new AnimateDockTask();
+		d.execute(dArray);		
 		
 		c.close();
 		db.close();

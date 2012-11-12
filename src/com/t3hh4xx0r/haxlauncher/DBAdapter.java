@@ -153,7 +153,7 @@ public class DBAdapter {
         return db.insert("searchables", null, values);      		
     } 
     
-    public Cursor getAllSearchables() {
+    public Cursor getAllSearchables() {   	
     	Cursor mCursor = db.query("searchables", new String[] {
         		"package", 
         		"text"}, 
@@ -164,6 +164,11 @@ public class DBAdapter {
                 null);	
 		return mCursor;
     } 
+    
+    public Cursor getAllSearchablePackages() {
+    	Cursor mCursor = db.rawQuery("Select * from searchables where package IS NOT NULL", null);
+		return mCursor;
+    }
     
     public long removeSearchablePackage(String p) {
         return db.delete("searchables", "package" + 

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
 import com.t3hh4xx0r.haxlauncher.R;
@@ -35,6 +36,7 @@ public class DockItemView extends RelativeLayout {
 	ImageView icon;
 	StyledTextFoo title;
 	View root;
+	static boolean canLaunch = true;
 
     public DockItemView(Context context, AttributeSet attrs) {
         this(context);
@@ -48,10 +50,11 @@ public class DockItemView extends RelativeLayout {
         root = layoutInflater.inflate(R.layout.dock_item, this);
         icon = (ImageView) root.findViewById(R.id.icon);
         title = (StyledTextFoo) root.findViewById(R.id.title);
+        //DOES THIS BULLSHIT EVEN DO ANYTYHING?
         root.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startApplication(getPName());				
+      			startApplication(getPName());
 			}
         });
         
@@ -61,6 +64,12 @@ public class DockItemView extends RelativeLayout {
 	@Override
     public boolean onTouchEvent(MotionEvent event) {
 		boolean handled = false;
+		if (getPName().equals("420")) {
+  			startApplication(getPName());
+  			canLaunch = false;
+            handled = true;
+			return true;
+		}
 		switch (event.getAction()) {    	
 			case MotionEvent.ACTION_CANCEL:
           		reset();
@@ -69,11 +78,10 @@ public class DockItemView extends RelativeLayout {
               	int diffYU = Math.abs(((int) event.getY()) - mStartPoint.y);
               	int diffXU = Math.abs(((int) event.getX()) - mStartPoint.x);
               	if (!handled) {
-              		if (diffYU < 10 && diffXU < 10) {              	
+              		if (diffYU < 10 && diffXU < 10) {   
               			startApplication(getPName());
               		} 
               	} 
-
              return handled;
          	case MotionEvent.ACTION_MOVE:
               	double diffXM = ((int) event.getX()) - mStartPoint.x;
@@ -118,6 +126,7 @@ public class DockItemView extends RelativeLayout {
     private void reset() {
         scrollTo(0, 0);
         setAlpha(1);
+        canLaunch = true;
     }
     
     public void setId(int id) {
@@ -145,6 +154,10 @@ public class DockItemView extends RelativeLayout {
     }
     
 	public static void startApplication(String packageName) {
+		if (packageName.equals("420")) {
+			startAddActivity();
+			return;
+		}
 	    try  {
 	        Intent intent = new Intent("android.intent.action.MAIN");
 	        intent.addCategory("android.intent.category.LAUNCHER");
@@ -159,6 +172,13 @@ public class DockItemView extends RelativeLayout {
 	    } catch (Exception e) {
 	    	e.printStackTrace();
 	    }
+	}
+
+	private static void startAddActivity() {
+		if (canLaunch) {
+			Intent i = new Intent(ctx, AddActivity.class);
+			ctx.startActivity(i);
+		}
 	}
 
 	private static void launchComponent(String packageName, String name) {
