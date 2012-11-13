@@ -76,11 +76,8 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
-    <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
 
     <application
         android:name="com.t3hh4xx0r.haxlauncher.LauncherApplication"
@@ -140,7 +137,8 @@
 		<activity android:name=".parse.ClientPushActivity"
 		    android:exported="false"
             android:label="Welcome to VIP" />                            
-		<activity android:name=".menu.AddActivity" />                    
+		<activity android:name=".menu.AddActivity"
+		    android:launchMode="singleInstance" />                    
 		<activity android:name=".parse.ParseUnsubscribeConfirmActivity"
 		    android:theme="@android:style/Theme.Holo.Dialog" />                    
 		<!-- Intent received used to install shortcuts from other applications -->
@@ -174,12 +172,6 @@
 	    <action android:name="com.t3hh4xx0r.haxlauncher.MESSAGE" />
 	    	  </intent-filter>
 	</receiver>	
-	<receiver android:name=".menu.livepanel.PanelReceiver">
-	  <intent-filter>
-	    <action android:name="com.t3hh4xx0r.haxlauncher.PANEL_REGISTER" />
-	    <action android:name="com.t3hh4xx0r.haxlauncher.PANEL_UPDATE" />
-	  </intent-filter>
-	</receiver>		
 	<receiver android:name=".menu.SearchListItemListener">
 	    <intent-filter>
 			<action android:name="android.intent.action.PACKAGE_ADDED"/>

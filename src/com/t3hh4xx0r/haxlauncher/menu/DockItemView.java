@@ -36,7 +36,6 @@ public class DockItemView extends RelativeLayout {
 	ImageView icon;
 	StyledTextFoo title;
 	View root;
-	static boolean canLaunch = true;
 
     public DockItemView(Context context, AttributeSet attrs) {
         this(context);
@@ -66,7 +65,6 @@ public class DockItemView extends RelativeLayout {
 		boolean handled = false;
 		if (getPName().equals("420")) {
   			startApplication(getPName());
-  			canLaunch = false;
             handled = true;
 			return true;
 		}
@@ -130,7 +128,6 @@ public class DockItemView extends RelativeLayout {
     private void reset() {
         scrollTo(0, 0);
         setAlpha(1);
-        canLaunch = true;
     }
     
     public void setId(int id) {
@@ -179,10 +176,8 @@ public class DockItemView extends RelativeLayout {
 	}
 
 	private static void startAddActivity() {
-		if (canLaunch) {
-			Intent i = new Intent(ctx, AddActivity.class);
-			ctx.startActivity(i);
-		}
+		Intent i = new Intent(ctx, AddActivity.class);
+		ctx.startActivity(i);
 	}
 
 	private static void launchComponent(String packageName, String name) {

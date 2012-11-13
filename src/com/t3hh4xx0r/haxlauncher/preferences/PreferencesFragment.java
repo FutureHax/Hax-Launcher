@@ -11,6 +11,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.view.View;
 import android.widget.ListView;
 
@@ -154,7 +155,8 @@ public class PreferencesFragment extends PreferenceFragment {
 	        addPreferencesFromResource(R.xml.preferences);
 	   }
 	   
-	   public boolean onPreferenceTreeClick(IconPreferenceScreenLeft screen, Preference preference) {			
+	   @Override
+	   public boolean onPreferenceTreeClick(PreferenceScreen screen, Preference preference) {			
 			String key = preference.getKey();
 			if(key.equals("ui_homescreen")){
 				showDetails(DetailsFragmentManager.Interface.HOMESCREEN);

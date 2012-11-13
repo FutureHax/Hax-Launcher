@@ -1,5 +1,6 @@
 package com.t3hh4xx0r.haxlauncher.menu;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import android.app.ProgressDialog;
@@ -25,20 +26,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.t3hh4xx0r.haxlauncher.DBAdapter;
 import com.t3hh4xx0r.haxlauncher.R;
-import com.t3hh4xx0r.haxlauncher.menu.livepanel.PanelReceiver;
 
 public class AddFragment extends ListFragment {
 	ListView v;
 	ActivityAdapter a;
 	Context ctx;
 	int pos;
-	ArrayList<String> names = new ArrayList<String>();
-	ArrayList<Bitmap> icons = new ArrayList<Bitmap>();
-	ArrayList<Boolean> selection = new ArrayList<Boolean>();
+	static ArrayList<String> names = new ArrayList<String>();
+	static ArrayList<String> packages = new ArrayList<String>();
+	static ArrayList<Bitmap> icons = new ArrayList<Bitmap>();
+	static ArrayList<Boolean> selection = new ArrayList<Boolean>();
 	 
 	@Override
 	  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,24 +84,27 @@ public class AddFragment extends ListFragment {
 	    protected void onPreExecute() {
 	        progressDialog = ProgressDialog.show(ctx, 
 	        		"Loading...","Getting all installed apps. ", true);
-	      	PanelReceiver.requestPanels(ctx);
-
 	    };      
 	    @Override
 		protected Void doInBackground(Object... params) {
+	    	packages.clear();
+	    	names.clear();
+	    	icons.clear();
+	    	selection.clear();
+
 	    	DBAdapter db = new DBAdapter(ctx);
 			db.open();
 			Cursor c = db.getAllSearchablePackages();
 			total = c.getCount();
 			while (c.moveToNext()) {
 				progress++;
+				packages.add(c.getString(c.getColumnIndex("package")));
 				names.add(c.getString(c.getColumnIndex("text")));
 				icons.add(getIconForPackage(c.getString(c.getColumnIndex("package"))));
 				selection.add(false);
 				publishProgress();
 			}
 			c.close();
-			db.close();
 			return null;
 			
 		};  
@@ -118,6 +121,14 @@ public class AddFragment extends ListFragment {
 		        public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean b) {
 		            Log.i("debug", "item " + position + " changed state to " +b);
 		            selection.set(position, b);
+		            DBAdapter db = new DBAdapter(ctx);
+		        	db.open();
+		            if (b) {
+			        	db.insertHotseat(packages.get(position), bitmapToByte(icons.get(position)), names.get(position));			
+			        	Log.d("AT LEAST ONE IS ADDED", "YA!");
+		            } else {
+		            	db.removeHotseat(packages.get(position));
+		            }
 		            a.notifyDataSetChanged();
 		        }
 
@@ -145,6 +156,7 @@ public class AddFragment extends ListFragment {
 		        public void onDestroyActionMode(ActionMode actionMode) {
 		        	a.isMulti = false;
 		        	a.notifyDataSetChanged();
+		        	AddActivity.pager.setCurrentItem(1, true);
 		        }
 		    });
 	    }
@@ -156,5 +168,12 @@ public class AddFragment extends ListFragment {
 	    }
 		
 	 }
+	
+	byte[] bitmapToByte(Bitmap in) {
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		in.compress(Bitmap.CompressFormat.PNG, 100, stream);
+		return stream.toByteArray();
+	}
+	
 }
 

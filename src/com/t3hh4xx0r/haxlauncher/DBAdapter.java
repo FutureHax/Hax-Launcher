@@ -16,7 +16,7 @@ public class DBAdapter {
 
     private static final String CREATE_HOTSEATS =
             "create table hotseats (_id integer primary key autoincrement, "
-            + "name text not null, icon blob not null, intent text not null);";
+            + "name text not null, icon blob not null, intent text not null, unique(name) on conflict ignore);";
     
     private static final String CREATE_SEARCHABLES =
             "create table searchables (_id integer primary key autoincrement, "
@@ -41,7 +41,7 @@ public class DBAdapter {
         
     private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
-            super(context, "hax_launcher.db", null, 2);
+            super(context, "hax_launcher.db", null, 4);
         }
 
         @Override

@@ -6,21 +6,36 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 import com.t3hh4xx0r.haxlauncher.R;
 
 public class AddActivity extends FragmentActivity {
-	ViewPager pager;
+	static ViewPager pager;
 	
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.add_activity);
 	   		
-		DockItemView.canLaunch = true;
         pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new ExamplePagerAdapter(getSupportFragmentManager()));
-        
+        pager.setOnPageChangeListener(new OnPageChangeListener() {
+			@Override
+			public void onPageScrollStateChanged(int arg0) {				
+			}
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {				
+			}
+			@Override
+			public void onPageSelected(int p) {
+				if (p == 1) {
+					try {
+						ReorderFragment.parseSelected(AddActivity.this);
+					} catch (Exception e) {}
+				}
+			}
+        	
+        });
         pager.setCurrentItem(0);
 	}
 	
@@ -32,7 +47,7 @@ public class AddActivity extends FragmentActivity {
 			
 		@Override
 		public int getCount() {
-		    return 1;
+		    return 2;
 		}
 		
 		@Override
@@ -40,7 +55,7 @@ public class AddActivity extends FragmentActivity {
 			if (position == 0) {
 				return new AddFragment();
 			} else {
-				return null;
+				return new ReorderFragment();
 			}
 	    }
 		

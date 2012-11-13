@@ -390,8 +390,10 @@ public class LauncherMenu extends RelativeLayout {
 		}
 		
 		DockItemView addCard = new DockItemView(mContext);
-		addCard.getTitle().setText("ADDD");
+		addCard.getTitle().setText("Add more");
 		addCard.setPName("420");
+		addCard.getIcon().setScaleType(ImageView.ScaleType.CENTER);
+		addCard.getIcon().setImageResource(R.drawable.ic_add);
 		dock.addView(addCard, lp);
 		dock.getChildAt(dock.getChildCount()-1).setVisibility(View.INVISIBLE);
 		dArray[dock.getChildCount()-1] = addCard;
